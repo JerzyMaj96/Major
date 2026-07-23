@@ -1,6 +1,10 @@
 spring:
   application:
     name: backend
+logging:
+  level:
+    root: INFO
+    com.jerzymaj.file_researcher_backend: DEBUG
 app:
   cors:
     allowed-origins: "${ALLOWED_ORIGIN:http://localhost:5173}"
