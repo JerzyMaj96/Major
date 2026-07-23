@@ -11,3 +11,6 @@ frontend/.env
 
 # Ogólne
 .DS_Store
+
+# env
+backend/.env
