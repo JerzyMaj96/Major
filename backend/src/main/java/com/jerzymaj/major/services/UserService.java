@@ -4,6 +4,7 @@ import com.jerzymaj.major.Dtos.RegisterUserDto;
 import com.jerzymaj.major.exceptions.ExistingUserException;
 import com.jerzymaj.major.exceptions.UserNotFoundException;
 import com.jerzymaj.major.models.User;
+import com.jerzymaj.major.models.enums.UserRole;
 import com.jerzymaj.major.repos.UserRepository;
 import com.jerzymaj.major.security.AuthFacade;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class UserService {
                 .name(registerUserDto.name())
                 .email(registerUserDto.email())
                 .password(passwordEncoder.encode(registerUserDto.password()))
+                .role(UserRole.USER)
                 .build();
 
         try {
