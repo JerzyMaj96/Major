@@ -2,6 +2,7 @@ package com.jerzymaj.major.services;
 
 import com.jerzymaj.major.Dtos.RegisterUserDto;
 import com.jerzymaj.major.exceptions.ExistingUserException;
+import com.jerzymaj.major.exceptions.UserNotFoundException;
 import com.jerzymaj.major.models.User;
 import com.jerzymaj.major.repos.UserRepository;
 import com.jerzymaj.major.security.AuthFacade;
@@ -40,6 +41,11 @@ public class UserService {
             throw new ExistingUserException("Name '" + registerUserDto.name()
                     + "' or email '" + registerUserDto.email() + "' is already taken");
         }
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User " + id + " not found"));
     }
 
     public void deleteCurrUser() {
