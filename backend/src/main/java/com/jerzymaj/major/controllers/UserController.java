@@ -26,11 +26,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> retrieveUserById(@PathVariable Long id) {
         return ResponseEntity.ok(UserMapper.toDto(userService.findUserById(id)));
     }
 
-    @DeleteMapping("/me")
+    @DeleteMapping("/delete-me")
     public ResponseEntity<Void> deleteCurrUser() {
         userService.deleteCurrUser();
         return ResponseEntity.noContent().build();
