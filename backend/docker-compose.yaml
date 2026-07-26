@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: major-db-container
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: major_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - major_postgres_data:/var/lib/postgresql/data
+
+volumes:
+    major_postgres_data:
