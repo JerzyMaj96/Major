@@ -1,6 +1,7 @@
 package com.jerzymaj.major.configuration;
 
 import com.jerzymaj.major.models.User;
+import com.jerzymaj.major.models.enums.UserRole;
 import com.jerzymaj.major.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
                     newUser.setName(annotation.username());
                     newUser.setEmail(annotation.username() + "@mail.com");
                     newUser.setPassword("password");
+                    newUser.setRole(UserRole.USER);
                     return userRepository.save(newUser);
                 });
 

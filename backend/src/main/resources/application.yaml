@@ -3,6 +3,9 @@ spring:
     name: backend
   profiles:
     active: dev
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
 logging:
   level:
     root: INFO
@@ -10,6 +13,9 @@ logging:
 app:
   cors:
     allowed-origins: "${ALLOWED_ORIGIN:http://localhost:5173}"
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: 604800000
 
 ---
 spring:
@@ -17,7 +23,7 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:postgresql://localhost:5432/hotel_guest_service_system
+    url: jdbc:postgresql://localhost:5433/major_db
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:

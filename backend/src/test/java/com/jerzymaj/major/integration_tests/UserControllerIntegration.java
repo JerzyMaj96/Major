@@ -29,10 +29,9 @@ public class UserControllerIntegration {
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private UserRepository userRepository;
+
+    private final ObjectMapper objectMapper = new  ObjectMapper();
 
     @BeforeEach
     public void setUp() {
