@@ -41,6 +41,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(TaskNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleTaskNotFoundException(TaskNotFoundException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.NOT_FOUND);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
