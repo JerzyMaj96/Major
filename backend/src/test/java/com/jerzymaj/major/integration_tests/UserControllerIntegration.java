@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jerzymaj.major.Dtos.RegisterUserDto;
 import com.jerzymaj.major.configuration.WithMockCustomUser;
 import com.jerzymaj.major.models.User;
+import com.jerzymaj.major.models.enums.UserRole;
 import com.jerzymaj.major.repos.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ public class UserControllerIntegration {
     @Autowired
     private UserRepository userRepository;
 
-    private final ObjectMapper objectMapper = new  ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {
@@ -40,12 +41,12 @@ public class UserControllerIntegration {
             tester.setName("tester");
             tester.setEmail("tester@mail.com");
             tester.setPassword("secret123");
+            tester.setRole(UserRole.USER);
             userRepository.save(tester);
         }
     }
 
     @Test
-    @WithMockCustomUser
     public void shouldRegisterUser() throws Exception {
         RegisterUserDto registerUserDTO = new RegisterUserDto("jerzy", "jerzy@mail.com", "secret123");
 
