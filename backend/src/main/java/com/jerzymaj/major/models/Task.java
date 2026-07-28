@@ -47,6 +47,10 @@ public class Task {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id")
+    private User createdBy;
+
     @ManyToOne
     @JoinColumn(name = "assignee_id")
     private User assignee;
