@@ -3,12 +3,14 @@ package com.jerzymaj.major.services;
 import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.exceptions.AssigneeMismatchException;
 import com.jerzymaj.major.exceptions.TaskNotFoundException;
+import com.jerzymaj.major.mappers.TaskMapper;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
 import com.jerzymaj.major.models.enums.TaskStatus;
 import com.jerzymaj.major.repos.TaskRepository;
 import com.jerzymaj.major.security.AuthFacade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +20,7 @@ public class TaskService {
     private final AuthFacade authFacade;
     private final UserService userService;
     private final TaskRepository taskRepository;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public Task createTask(CreateTaskDto createTaskDto) {
         User creator = authFacade.getCurrentUser();
@@ -66,6 +69,10 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
         task.setStatus(taskStatus);
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        simpMessagingTemplate.convertAndSend("/topic/task-updates", TaskMapper.toDto(savedTask));
+
+        return savedTask;
     }
 }
