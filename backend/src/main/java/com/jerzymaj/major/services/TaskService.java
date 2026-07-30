@@ -59,4 +59,12 @@ public class TaskService {
             throw new IllegalArgumentException("Assignee with id: " + assigneeId + " is not assigned to the task with id: " + taskId);
         }
     }
+
+    public Task updateTaskStatus(Long taskId, TaskStatus taskStatus) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+
+        task.setStatus(taskStatus);
+        return taskRepository.save(task);
+    }
 }
