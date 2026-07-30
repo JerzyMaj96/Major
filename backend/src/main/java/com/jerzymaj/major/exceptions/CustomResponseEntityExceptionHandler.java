@@ -63,6 +63,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AssigneeMismatchException.class)
+    public final ResponseEntity<ErrorDetails> handleAssigneeMismatchException(AssigneeMismatchException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.CONFLICT);
+    }
+
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex, WebRequest request) {

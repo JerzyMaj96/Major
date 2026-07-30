@@ -1,6 +1,7 @@
 package com.jerzymaj.major.services;
 
 import com.jerzymaj.major.Dtos.CreateTaskDto;
+import com.jerzymaj.major.exceptions.AssigneeMismatchException;
 import com.jerzymaj.major.exceptions.TaskNotFoundException;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
@@ -56,7 +57,7 @@ public class TaskService {
             task.setAssignee(null);
             taskRepository.save(task);
         } else {
-            throw new IllegalArgumentException("Assignee with id: " + assigneeId + " is not assigned to the task with id: " + taskId);
+            throw new AssigneeMismatchException("Assignee with id: " + assigneeId + " is not assigned to the task with id: " + taskId);
         }
     }
 
