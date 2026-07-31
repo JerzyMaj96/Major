@@ -47,6 +47,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(LabelNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleLabelNotFoundException(LabelNotFoundException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.NOT_FOUND);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
