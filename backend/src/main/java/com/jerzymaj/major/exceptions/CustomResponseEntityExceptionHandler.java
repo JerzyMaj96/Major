@@ -59,6 +59,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AiGenerationException.class)
+    public final ResponseEntity<ErrorDetails> handleAiGenerationException(AiGenerationException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
