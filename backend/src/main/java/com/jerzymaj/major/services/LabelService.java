@@ -36,8 +36,13 @@ public class LabelService {
         Label label = getLabelById(labelId);
 
         label.setName(labelDto.name() != null ? labelDto.name() : label.getName());
-        label.setColor(labelDto.color()  != null ? labelDto.color() : label.getColor());
+        label.setColor(labelDto.color() != null ? labelDto.color() : label.getColor());
 
         return labelRepository.save(label);
+    }
+
+    public void deleteLabelById(Long labelId) {
+        Label label = getLabelById(labelId);
+        labelRepository.delete(label);
     }
 }
