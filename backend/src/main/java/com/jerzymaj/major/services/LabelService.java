@@ -1,7 +1,8 @@
 package com.jerzymaj.major.services;
 
 import com.jerzymaj.major.Dtos.CreateLabelDto;
-import com.jerzymaj.major.Dtos.LabelDto;
+import com.jerzymaj.major.Dtos.UpdateLabelDto;
+import com.jerzymaj.major.exceptions.ExistingLabelNameException;
 import com.jerzymaj.major.exceptions.LabelNotFoundException;
 import com.jerzymaj.major.models.Label;
 import com.jerzymaj.major.repos.LabelRepository;
@@ -26,6 +27,10 @@ public class LabelService {
     }
 
     public Label createLabel(CreateLabelDto createLabelDto) {
+        if (labelRepository.existsByName(createLabelDto.name())) {
+            throw new ExistingLabelNameException("Label with name " + createLabelDto.name() + " already exists");
+        }
+
         Label label = Label.builder()
                 .name(createLabelDto.name())
                 .color(createLabelDto.color())
@@ -33,11 +38,17 @@ public class LabelService {
         return labelRepository.save(label);
     }
 
-    public Label updateLabel(Long labelId, CreateLabelDto createLabelDto) {
+    public Label updateLabel(Long labelId, UpdateLabelDto updateLabelDto) {
         Label label = getLabelById(labelId);
 
-        label.setName(createLabelDto.name() != null ? createLabelDto.name() : label.getName());
-        label.setColor(createLabelDto.color() != null ? createLabelDto.color() : label.getColor());
+        if (updateLabelDto.name() != null &&
+                !updateLabelDto.name().equals(label.getName()) &&
+                labelRepository.existsByName(updateLabelDto.name())) {
+            throw new ExistingLabelNameException("Label with name " + updateLabelDto.name() + " already exists");
+        }
+
+        label.setName(updateLabelDto.name() != null ? updateLabelDto.name() : label.getName());
+        label.setColor(updateLabelDto.color() != null ? updateLabelDto.color() : label.getColor());
 
         return labelRepository.save(label);
     }

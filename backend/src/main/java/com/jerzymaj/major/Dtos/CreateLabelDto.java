@@ -1,4 +1,6 @@
 package com.jerzymaj.major.Dtos;
 
-public record CreateLabelDto(String name, String color) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CreateLabelDto(@NotBlank String name,@NotBlank String color) {
 }
