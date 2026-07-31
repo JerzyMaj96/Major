@@ -22,6 +22,7 @@ public class TaskService {
 
     private final AuthFacade authFacade;
     private final UserService userService;
+    private final LabelService labelService;
     private final TaskRepository taskRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -99,5 +100,21 @@ public class TaskService {
         simpMessagingTemplate.convertAndSend("/topic/task-updates", TaskMapper.toDto(savedTask));
 
         return savedTask;
+    }
+
+    public Task addLabelToTask(Long taskId, Long labelId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+
+        task.getLabels().add(labelService.getLabelById(labelId));
+        return taskRepository.save(task);
+    }
+
+    public Task deleteLabelFromTask(Long taskId, Long labelId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+
+        task.getLabels().removeIf(label -> label.getId().equals(labelId));
+        return taskRepository.save(task);
     }
 }
