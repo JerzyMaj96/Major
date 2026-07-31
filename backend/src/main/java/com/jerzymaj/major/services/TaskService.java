@@ -13,6 +13,7 @@ import com.jerzymaj.major.security.AuthFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class TaskService {
     private final AuthFacade authFacade;
     private final UserService userService;
     private final LabelService labelService;
+    private final GptService gptService;
     private final TaskRepository taskRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -31,9 +33,18 @@ public class TaskService {
 
         User assignee = createTaskDto.assigneeId() != null ? userService.findUserById(createTaskDto.assigneeId()) : null;
 
+        String description;
+        if (createTaskDto.generateDescription()) {
+            description = gptService.generateTaskDescription(createTaskDto.title());
+        } else if (createTaskDto.description() != null && !createTaskDto.description().isBlank()) {
+            description = createTaskDto.description();
+        } else {
+            throw new IllegalArgumentException("Description must be provided if generateDescription is false");
+        }
+
         Task task = Task.builder()
                 .title(createTaskDto.title())
-                .description(createTaskDto.description())
+                .description(description)
                 .status(TaskStatus.BACKLOG)
                 .createdBy(creator)
                 .assignee(assignee)
@@ -55,8 +66,16 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
-        task.setTitle(updateTaskDto.title() != null ? updateTaskDto.title() : task.getTitle());
-        task.setDescription(updateTaskDto.description() != null ? updateTaskDto.description() : task.getDescription());
+        if (updateTaskDto.title() != null) {
+            task.setTitle(updateTaskDto.title());
+        }
+
+        if (updateTaskDto.generateDescription()) {
+            task.setDescription(gptService.generateTaskDescription(task.getTitle()));
+        } else if (updateTaskDto.description() != null) {
+            task.setDescription(updateTaskDto.description());
+        }
+
 
         return taskRepository.save(task);
     }
@@ -65,7 +84,7 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
-        taskRepository.deleteById(taskId);
+        taskRepository.delete(task);
     }
 
     public Task addAssignee(Long taskId, Long assigneeId) {
