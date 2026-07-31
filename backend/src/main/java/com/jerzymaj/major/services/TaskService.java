@@ -1,6 +1,7 @@
 package com.jerzymaj.major.services;
 
 import com.jerzymaj.major.Dtos.CreateTaskDto;
+import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.exceptions.AssigneeMismatchException;
 import com.jerzymaj.major.exceptions.TaskNotFoundException;
 import com.jerzymaj.major.mappers.TaskMapper;
@@ -12,6 +13,8 @@ import com.jerzymaj.major.security.AuthFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +37,25 @@ public class TaskService {
                 .createdBy(creator)
                 .assignee(assignee)
                 .build();
+
+        return taskRepository.save(task);
+    }
+
+    public Task getTaskById(Long taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+    }
+
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
+    public Task updateTask(Long taskId, UpdateTaskDto updateTaskDto) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
+
+        task.setTitle(updateTaskDto.title() != null ? updateTaskDto.title() : task.getTitle());
+        task.setDescription(updateTaskDto.description() != null ? updateTaskDto.description() : task.getDescription());
 
         return taskRepository.save(task);
     }
