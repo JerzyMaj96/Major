@@ -1,9 +1,10 @@
 package com.jerzymaj.major.mappers;
 
 import com.jerzymaj.major.Dtos.UserDto;
+import com.jerzymaj.major.Dtos.UserSummaryDto;
 import com.jerzymaj.major.models.User;
 
-public class UserMapper {
+public final class UserMapper {
 
     private UserMapper() {
     }
@@ -14,6 +15,13 @@ public class UserMapper {
                 user.getName(),
                 user.getEmail(),
                 user.getCreationDate()
+        );
+    }
+
+    public static UserSummaryDto toSummaryDto(User user) {
+        return new UserSummaryDto(
+                user.getId(),
+                user.getName()
         );
     }
 }
