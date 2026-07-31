@@ -1,5 +1,6 @@
 package com.jerzymaj.major.services;
 
+import com.jerzymaj.major.Dtos.CreateLabelDto;
 import com.jerzymaj.major.Dtos.LabelDto;
 import com.jerzymaj.major.exceptions.LabelNotFoundException;
 import com.jerzymaj.major.models.Label;
@@ -24,19 +25,19 @@ public class LabelService {
                 .orElseThrow(() -> new LabelNotFoundException("Label not found with id: " + labelId));
     }
 
-    public Label createLabel(LabelDto labelDto) {
+    public Label createLabel(CreateLabelDto createLabelDto) {
         Label label = Label.builder()
-                .name(labelDto.name())
-                .color(labelDto.color())
+                .name(createLabelDto.name())
+                .color(createLabelDto.color())
                 .build();
         return labelRepository.save(label);
     }
 
-    public Label updateLabel(Long labelId, LabelDto labelDto) {
+    public Label updateLabel(Long labelId, CreateLabelDto createLabelDto) {
         Label label = getLabelById(labelId);
 
-        label.setName(labelDto.name() != null ? labelDto.name() : label.getName());
-        label.setColor(labelDto.color() != null ? labelDto.color() : label.getColor());
+        label.setName(createLabelDto.name() != null ? createLabelDto.name() : label.getName());
+        label.setColor(createLabelDto.color() != null ? createLabelDto.color() : label.getColor());
 
         return labelRepository.save(label);
     }
