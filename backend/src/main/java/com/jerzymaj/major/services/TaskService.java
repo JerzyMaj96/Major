@@ -80,7 +80,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public void deleteTask(Long taskId) {
+    public void deleteTaskById(Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 

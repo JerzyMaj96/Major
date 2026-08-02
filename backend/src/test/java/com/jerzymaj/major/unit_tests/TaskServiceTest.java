@@ -102,7 +102,7 @@ public class TaskServiceTest {
 
     @Test
     public void shouldDeleteTask_IfSuccess() {
-        taskService.deleteTask(1L);
+        taskService.deleteTaskById(1L);
 
         verify(taskRepository).delete(expectedTask);
     }
