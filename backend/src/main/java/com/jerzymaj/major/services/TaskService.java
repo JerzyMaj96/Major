@@ -31,7 +31,7 @@ public class TaskService {
     public Task createTask(CreateTaskDto createTaskDto) {
         User creator = authFacade.getCurrentUser();
 
-        User assignee = createTaskDto.assigneeId() != null ? userService.findUserById(createTaskDto.assigneeId()) : null;
+        User assignee = createTaskDto.assigneeId() != null ? userService.getUserById(createTaskDto.assigneeId()) : null;
 
         String description;
         if (createTaskDto.generateDescription()) {
@@ -91,7 +91,7 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
-        User assignee = userService.findUserById(assigneeId);
+        User assignee = userService.getUserById(assigneeId);
 
         task.setAssignee(assignee);
         return taskRepository.save(task);
