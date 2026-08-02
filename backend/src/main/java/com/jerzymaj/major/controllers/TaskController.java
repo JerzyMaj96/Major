@@ -29,7 +29,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<TaskDto> retrieveTaskById(@PathVariable Long taskId) {
+    public ResponseEntity<TaskDto> retrieveTaskById(@PathVariable("taskId") Long taskId) {
         TaskDto taskDto = TaskMapper.toDto(taskService.getTaskById(taskId));
 
         return ResponseEntity.ok(taskDto);
@@ -44,49 +44,49 @@ public class TaskController {
     }
 
     @PatchMapping("/{taskId}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable Long taskId, @RequestBody UpdateTaskDto updateTaskDto) {
+    public ResponseEntity<TaskDto> updateTask(@PathVariable("taskId") Long taskId, @RequestBody UpdateTaskDto updateTaskDto) {
         TaskDto taskDto = TaskMapper.toDto(taskService.updateTask(taskId, updateTaskDto));
 
         return ResponseEntity.ok(taskDto);
     }
 
     @DeleteMapping("/{taskId}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
+    public ResponseEntity<Void> deleteTask(@PathVariable("taskId") Long taskId) {
         taskService.deleteTaskById(taskId);
 
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{taskId}/assignees/{assigneeId}")
-    public ResponseEntity<TaskDto> assignTask(@PathVariable Long taskId, @PathVariable Long assigneeId) {
+    public ResponseEntity<TaskDto> assignTask(@PathVariable("taskId") Long taskId, @PathVariable("assigneeId") Long assigneeId) {
         TaskDto taskDto = TaskMapper.toDto(taskService.addAssignee(taskId, assigneeId));
 
         return ResponseEntity.ok(taskDto);
     }
 
     @DeleteMapping("/{taskId}/assignees/{assigneeId}")
-    public ResponseEntity<Void> removeAssignee(@PathVariable Long taskId, @PathVariable Long assigneeId) {
+    public ResponseEntity<Void> removeAssignee(@PathVariable("taskId") Long taskId, @PathVariable("assigneeId") Long assigneeId) {
         taskService.deleteAssignee(taskId, assigneeId);
 
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{taskId}/status")
-    public ResponseEntity<TaskDto> updateTaskStatus(@PathVariable Long taskId, @RequestParam TaskStatus taskStatus) {
+    public ResponseEntity<TaskDto> updateTaskStatus(@PathVariable("taskId") Long taskId, @RequestParam("taskStatus") TaskStatus taskStatus) {
         TaskDto taskDto = TaskMapper.toDto(taskService.updateTaskStatus(taskId, taskStatus));
 
         return ResponseEntity.ok(taskDto);
     }
 
     @PatchMapping("/{taskId}/labels/{labelId}")
-    public ResponseEntity<TaskDto> addLabelToTask(@PathVariable Long taskId, @PathVariable Long labelId) {
+    public ResponseEntity<TaskDto> addLabelToTask(@PathVariable("taskId") Long taskId, @PathVariable("labelId") Long labelId) {
         TaskDto taskDto = TaskMapper.toDto(taskService.addLabelToTask(taskId, labelId));
 
         return ResponseEntity.ok(taskDto);
     }
 
     @DeleteMapping("/{taskId}/labels/{labelId}")
-    public ResponseEntity<Void> removeLabelFromTask(@PathVariable Long taskId, @PathVariable Long labelId) {
+    public ResponseEntity<Void> removeLabelFromTask(@PathVariable("taskId") Long taskId, @PathVariable("labelId") Long labelId) {
         taskService.deleteLabelFromTask(taskId, labelId);
 
         return ResponseEntity.noContent().build();
