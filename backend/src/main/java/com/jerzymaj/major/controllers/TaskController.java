@@ -6,8 +6,8 @@ import com.jerzymaj.major.Dtos.TaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.mappers.ActivityLogMapper;
 import com.jerzymaj.major.mappers.TaskMapper;
-import com.jerzymaj.major.models.ActivityLog;
 import com.jerzymaj.major.models.enums.TaskStatus;
+import com.jerzymaj.major.services.ActivityLogService;
 import com.jerzymaj.major.services.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,7 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
+    private final ActivityLogService activityLogService;
 
     @PostMapping
     public ResponseEntity<TaskDto> createTask(@Valid @RequestBody CreateTaskDto createTaskDto) {
