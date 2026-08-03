@@ -15,7 +15,6 @@ import com.jerzymaj.major.repos.LabelRepository;
 import com.jerzymaj.major.repos.TaskRepository;
 import com.jerzymaj.major.repos.UserRepository;
 import com.jerzymaj.major.services.GptService;
-import com.jerzymaj.major.services.LabelService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,9 +50,6 @@ public class TaskControllerIntegration {
 
     @Autowired
     private LabelRepository labelRepository;
-
-    @MockitoBean
-    private LabelService labelService;
 
     @MockitoBean
     private GptService gptService;
@@ -105,8 +101,6 @@ public class TaskControllerIntegration {
                 .build();
 
         labelRepository.save(testLabel);
-
-        when(labelService.getLabelById(testLabel.getId())).thenReturn(testLabel);
     }
 
     @Test
@@ -158,6 +152,9 @@ public class TaskControllerIntegration {
 
         mockMvc.perform(delete("/major/api/tasks/{id}", testTask.getId()))
                 .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/major/api/tasks/{id}", testTask.getId()))
+                .andExpect(status().isNotFound());
     }
 
     @Test
