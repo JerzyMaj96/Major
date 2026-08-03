@@ -97,8 +97,8 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId}/activity-logs")
-    public ResponseEntity<List<ActivityLogDto>> retrieveAllActivityLogs() {
-        List<ActivityLogDto> activityLogDtos = activityLogService.getAllActivityLogs().stream()
+    public ResponseEntity<List<ActivityLogDto>> retrieveAllActivityLogsForTask(@PathVariable("taskId") Long taskId) {
+        List<ActivityLogDto> activityLogDtos = activityLogService.getAllActivityLogsForTask(taskId).stream()
                 .map(ActivityLogMapper::toDto)
                 .toList();
         return ResponseEntity.ok(activityLogDtos);
