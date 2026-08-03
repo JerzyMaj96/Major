@@ -38,11 +38,12 @@ public class User implements UserDetails {
 
     @Email
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotBlank
     @Size(min = 8)
+    @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
