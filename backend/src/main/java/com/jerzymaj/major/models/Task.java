@@ -48,7 +48,7 @@ public class Task {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id")
+    @JoinColumn(name = "created_by_id", nullable = false)
     private User createdBy;
 
     @ManyToOne
@@ -57,9 +57,9 @@ public class Task {
 
     @ManyToMany
     @JoinTable(
-            name = "task_tags",
+            name = "task_labels",
             joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+            inverseJoinColumns = @JoinColumn(name = "label_id")
     )
     @Builder.Default
     private Set<Label> labels = new HashSet<>();
