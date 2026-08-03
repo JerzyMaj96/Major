@@ -4,6 +4,7 @@ import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.Dtos.TaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.mappers.TaskMapper;
+import com.jerzymaj.major.models.ActivityLog;
 import com.jerzymaj.major.models.enums.TaskStatus;
 import com.jerzymaj.major.services.TaskService;
 import jakarta.validation.Valid;
@@ -90,5 +91,13 @@ public class TaskController {
         taskService.deleteLabelFromTask(taskId, labelId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{taskId}/activity-logs")
+    public ResponseEntity<List<ActivityLogDto>> retrieveAllActivityLogs() {
+        List<ActivityLogDto> activityLogDtos = activityLogService.getAllActivityLogs().stream()
+                .map(ActivityLogMapper::toDto)
+                .toList();
+        return ResponseEntity.ok(activityLogDtos);
     }
 }
