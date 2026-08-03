@@ -3,7 +3,6 @@ package com.jerzymaj.major.unit_tests;
 import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.Dtos.TaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
-import com.jerzymaj.major.mappers.TaskMapper;
 import com.jerzymaj.major.models.Label;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
