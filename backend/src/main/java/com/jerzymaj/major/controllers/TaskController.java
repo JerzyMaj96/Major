@@ -1,8 +1,10 @@
 package com.jerzymaj.major.controllers;
 
+import com.jerzymaj.major.Dtos.ActivityLogDto;
 import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.Dtos.TaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
+import com.jerzymaj.major.mappers.ActivityLogMapper;
 import com.jerzymaj.major.mappers.TaskMapper;
 import com.jerzymaj.major.models.ActivityLog;
 import com.jerzymaj.major.models.enums.TaskStatus;
