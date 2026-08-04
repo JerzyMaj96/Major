@@ -1,6 +1,7 @@
 package com.jerzymaj.major.controllers;
 
 import com.jerzymaj.major.Dtos.LoginRequest;
+import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.configuration.JwtProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("major/api/auth")
+@RequestMapping(ApiRoutes.BASE_API + "/auth")
 @RequiredArgsConstructor
 public class AuthController {
 

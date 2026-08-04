@@ -3,8 +3,8 @@ package com.jerzymaj.major.controllers;
 import com.jerzymaj.major.Dtos.CreateLabelDto;
 import com.jerzymaj.major.Dtos.LabelDto;
 import com.jerzymaj.major.Dtos.UpdateLabelDto;
+import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.mappers.LabelMapper;
-import com.jerzymaj.major.models.Label;
 import com.jerzymaj.major.services.LabelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("major/api/labels")
+@RequestMapping(ApiRoutes.BASE_API + "/labels")
 @RequiredArgsConstructor
 public class LabelController {
 
@@ -26,7 +26,7 @@ public class LabelController {
 
         LabelDto labelDto = LabelMapper.toDto(labelService.createLabel(createLabelDto));
 
-        return ResponseEntity.created(URI.create("major/api/labels/" + labelDto.id())).body(labelDto);
+        return ResponseEntity.created(URI.create(ApiRoutes.BASE_API + "/labels/" + labelDto.id())).body(labelDto);
     }
 
     @GetMapping

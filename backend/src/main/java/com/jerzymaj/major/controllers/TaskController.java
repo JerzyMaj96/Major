@@ -4,6 +4,7 @@ import com.jerzymaj.major.Dtos.ActivityLogDto;
 import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.Dtos.TaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
+import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.mappers.ActivityLogMapper;
 import com.jerzymaj.major.mappers.TaskMapper;
 import com.jerzymaj.major.models.enums.TaskStatus;
@@ -18,7 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("major/api/tasks")
+@RequestMapping(ApiRoutes.BASE_API + "/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -29,7 +30,7 @@ public class TaskController {
     public ResponseEntity<TaskDto> createTask(@Valid @RequestBody CreateTaskDto createTaskDto) {
         TaskDto taskDto = TaskMapper.toDto(taskService.createTask(createTaskDto));
 
-        return ResponseEntity.created(URI.create("/major/api/tasks/" + taskDto.id())).body(taskDto);
+        return ResponseEntity.created(URI.create(ApiRoutes.BASE_API + "/tasks/" + taskDto.id())).body(taskDto);
     }
 
     @GetMapping("/{taskId}")

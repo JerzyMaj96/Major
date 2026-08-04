@@ -1,6 +1,7 @@
 package com.jerzymaj.major.controllers;
 
 import com.jerzymaj.major.Dtos.ActivityLogDto;
+import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.mappers.ActivityLogMapper;
 import com.jerzymaj.major.services.ActivityLogService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("major/api")
+@RequestMapping(ApiRoutes.BASE_API)
 @RequiredArgsConstructor
 public class ActivityLogController {
 
