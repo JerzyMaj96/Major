@@ -6,14 +6,12 @@ import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.models.Label;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
+import com.jerzymaj.major.models.enums.ChangeType;
 import com.jerzymaj.major.models.enums.TaskStatus;
 import com.jerzymaj.major.models.enums.UserRole;
 import com.jerzymaj.major.repos.TaskRepository;
 import com.jerzymaj.major.security.AuthFacade;
-import com.jerzymaj.major.services.GptService;
-import com.jerzymaj.major.services.LabelService;
-import com.jerzymaj.major.services.TaskService;
-import com.jerzymaj.major.services.UserService;
+import com.jerzymaj.major.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +38,9 @@ public class TaskServiceTest {
 
     @Mock
     private LabelService labelService;
+
+    @Mock
+    private ActivityLogService activityLogService;
 
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -71,15 +72,19 @@ public class TaskServiceTest {
                 .assignee(assignee)
                 .build();
 
+        lenient().when(authFacade.getCurrentUser()).thenReturn(creator);
         lenient().when(taskRepository.findById(1L)).thenReturn(Optional.of(expectedTask));
         lenient().when(userService.getUserById(2L)).thenReturn(assignee);
         lenient().when(taskRepository.save(any(Task.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+
+        lenient().when(activityLogService.createActivityLog(any(Task.class), any(ChangeType.class), any(String.class),
+                any(String.class), any(String.class))).thenReturn(null);
+        lenient().when(labelService.getLabelById(1L)).thenReturn(new Label(1L, "Label 1", "#FFFFFF"));
     }
 
     @Test
     public void shouldCreateTaskWithGenDescription_IfSuccess() {
-        when(authFacade.getCurrentUser()).thenReturn(creator);
         when(gptService.generateTaskDescription("Test Task")).thenReturn("Generated description");
 
         Task actualResult = taskService.createTask(new CreateTaskDto("Test Task", null, 2L, true));
@@ -133,7 +138,6 @@ public class TaskServiceTest {
 
     @Test
     public void shouldAddLabel_IfSuccess() {
-        when(labelService.getLabelById(1L)).thenReturn(new Label(1L, "Label 1", "#FFFFFF"));
 
         Task actualResult = taskService.addLabelToTask(1L, 1L);
 
