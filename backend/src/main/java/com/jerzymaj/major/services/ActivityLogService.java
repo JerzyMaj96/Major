@@ -1,5 +1,6 @@
 package com.jerzymaj.major.services;
 
+import com.jerzymaj.major.exceptions.TaskNotFoundException;
 import com.jerzymaj.major.models.ActivityLog;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.enums.ChangeType;
@@ -22,6 +23,9 @@ public class ActivityLogService {
     }
 
     public List<ActivityLog> getAllActivityLogsForTask(Long taskId) {
+        if (!taskRepository.existsById(taskId)) {
+            throw new TaskNotFoundException("Task not found with id: " + taskId);
+        }
         return activityLogRepository.findAllByTaskId(taskId);
     }
 
@@ -35,6 +39,4 @@ public class ActivityLogService {
                 .task(task)
                 .build());
     }
-
-
 }
