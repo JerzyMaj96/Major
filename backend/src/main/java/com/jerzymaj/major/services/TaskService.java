@@ -5,15 +5,16 @@ import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.exceptions.AssigneeMismatchException;
 import com.jerzymaj.major.exceptions.TaskNotFoundException;
 import com.jerzymaj.major.mappers.TaskMapper;
+import com.jerzymaj.major.models.Label;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
+import com.jerzymaj.major.models.enums.ChangeType;
 import com.jerzymaj.major.models.enums.TaskStatus;
 import com.jerzymaj.major.repos.TaskRepository;
 import com.jerzymaj.major.security.AuthFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class TaskService {
     private final UserService userService;
     private final LabelService labelService;
     private final GptService gptService;
+    private final ActivityLogService activityLogService;
     private final TaskRepository taskRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -50,7 +52,12 @@ public class TaskService {
                 .assignee(assignee)
                 .build();
 
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        activityLogService.createActivityLog(savedTask, ChangeType.TASK_CHANGE, null,
+                "Task created", creator.getName());
+
+        return savedTask;
     }
 
     public Task getTaskById(Long taskId) {
@@ -66,6 +73,9 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
+        String oldTitle = task.getTitle();
+        String oldDescription = task.getDescription();
+
         if (updateTaskDto.title() != null) {
             task.setTitle(updateTaskDto.title());
         }
@@ -76,8 +86,19 @@ public class TaskService {
             task.setDescription(updateTaskDto.description());
         }
 
+        Task savedTask = taskRepository.save(task);
 
-        return taskRepository.save(task);
+        if (updateTaskDto.title() != null) {
+            activityLogService.createActivityLog(savedTask, ChangeType.TASK_CHANGE,
+                    oldTitle, savedTask.getTitle(), authFacade.getCurrentUser().getName());
+        }
+        if (updateTaskDto.description() != null || updateTaskDto.generateDescription()) {
+            activityLogService.createActivityLog(savedTask, ChangeType.TASK_CHANGE,
+                    oldDescription, savedTask.getDescription(), authFacade.getCurrentUser().getName());
+        }
+
+
+        return savedTask;
     }
 
     public void deleteTaskById(Long taskId) {
@@ -94,7 +115,13 @@ public class TaskService {
         User assignee = userService.getUserById(assigneeId);
 
         task.setAssignee(assignee);
-        return taskRepository.save(task);
+
+        Task savedTask = taskRepository.save(task);
+
+        activityLogService.createActivityLog(savedTask, ChangeType.ASSIGNEE_CHANGE, null,
+                "Assignee added: " + assignee.getName(), authFacade.getCurrentUser().getName());
+
+        return savedTask;
     }
 
     public void deleteAssignee(Long taskId, Long assigneeId) {
@@ -103,7 +130,10 @@ public class TaskService {
 
         if (task.getAssignee() != null && task.getAssignee().getId().equals(assigneeId)) {
             task.setAssignee(null);
-            taskRepository.save(task);
+            Task savedTask = taskRepository.save(task);
+
+            activityLogService.createActivityLog(savedTask, ChangeType.ASSIGNEE_CHANGE, null,
+                    "Assignee removed", authFacade.getCurrentUser().getName());
         } else {
             throw new AssigneeMismatchException("Assignee with id: " + assigneeId + " is not assigned to the task with id: " + taskId);
         }
@@ -113,10 +143,14 @@ public class TaskService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
+        TaskStatus status = task.getStatus();
         task.setStatus(taskStatus);
         Task savedTask = taskRepository.save(task);
 
         simpMessagingTemplate.convertAndSend("/topic/task-updates", TaskMapper.toDto(savedTask));
+
+        activityLogService.createActivityLog(savedTask, ChangeType.STATUS_CHANGE, status.toString(),
+                "Status changed to: " + taskStatus.name(), authFacade.getCurrentUser().getName());
 
         return savedTask;
     }
@@ -126,14 +160,25 @@ public class TaskService {
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
         task.getLabels().add(labelService.getLabelById(labelId));
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        activityLogService.createActivityLog(savedTask, ChangeType.LABEL_CHANGE, null,
+                "Label added: " + labelService.getLabelById(labelId).getName(), authFacade.getCurrentUser().getName());
+
+        return savedTask;
     }
 
     public Task deleteLabelFromTask(Long taskId, Long labelId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
-        task.getLabels().removeIf(label -> label.getId().equals(labelId));
-        return taskRepository.save(task);
+        Label label = labelService.getLabelById(labelId);
+        task.getLabels().removeIf(l -> l.getId().equals(labelId));
+        Task savedTask = taskRepository.save(task);
+
+        activityLogService.createActivityLog(savedTask, ChangeType.LABEL_CHANGE, "Label removed: " + label.getName(),
+                null, authFacade.getCurrentUser().getName());
+
+        return savedTask;
     }
 }
