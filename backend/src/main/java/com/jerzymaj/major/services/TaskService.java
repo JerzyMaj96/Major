@@ -176,8 +176,8 @@ public class TaskService {
         task.getLabels().removeIf(l -> l.getId().equals(labelId));
         Task savedTask = taskRepository.save(task);
 
-        activityLogService.createActivityLog(savedTask, ChangeType.LABEL_CHANGE, "Label removed: " + label.getName(),
-                null, authFacade.getCurrentUser().getName());
+        activityLogService.createActivityLog(savedTask, ChangeType.LABEL_CHANGE, null,
+                "Label removed: " + label.getName(), authFacade.getCurrentUser().getName());
 
         return savedTask;
     }
