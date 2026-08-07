@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 @Component
 public class GitHubSignatureVerifier {
@@ -19,7 +20,10 @@ public class GitHubSignatureVerifier {
         String expectedSignature = signatureHeader.substring("sha256=".length());
         String computedSignature = computeHmac(payload, secret);
 
-        return expectedSignature.equals(computedSignature);
+        return MessageDigest.isEqual(
+                expectedSignature.getBytes(StandardCharsets.UTF_8),
+                computedSignature.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     private String computeHmac(String payload, String secret) {
