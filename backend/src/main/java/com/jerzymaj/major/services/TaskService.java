@@ -139,7 +139,7 @@ public class TaskService {
         }
     }
 
-    public Task updateTaskStatus(Long taskId, TaskStatus taskStatus) {
+    public Task updateTaskStatus(Long taskId, TaskStatus taskStatus, String changedBy) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
 
@@ -150,9 +150,13 @@ public class TaskService {
         simpMessagingTemplate.convertAndSend("/topic/task-updates", TaskMapper.toDto(savedTask));
 
         activityLogService.createActivityLog(savedTask, ChangeType.STATUS_CHANGE, status.toString(),
-                "Status changed to: " + taskStatus.name(), authFacade.getCurrentUser().getName());
+                "Status changed to: " + taskStatus.name(), changedBy);
 
         return savedTask;
+    }
+
+    public Task updateTaskStatus(Long taskId, TaskStatus taskStatus) {
+        return updateTaskStatus(taskId, taskStatus, authFacade.getCurrentUser().getName());
     }
 
     public Task addLabelToTask(Long taskId, Long labelId) {

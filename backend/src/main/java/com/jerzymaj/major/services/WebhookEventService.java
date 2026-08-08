@@ -9,7 +9,6 @@ import com.jerzymaj.major.models.WebhookEvent;
 import com.jerzymaj.major.models.enums.EventType;
 import com.jerzymaj.major.models.enums.TaskStatus;
 import com.jerzymaj.major.models.enums.WebhookEventStatus;
-import com.jerzymaj.major.repos.TaskRepository;
 import com.jerzymaj.major.repos.WebhookEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,6 @@ import java.util.regex.Pattern;
 public class WebhookEventService {
 
     private final WebhookEventRepository webhookEventRepository;
-    private final TaskRepository taskRepository;
     private final TaskService taskService;
 
     public void processEvent(String eventType, String payload) {
@@ -88,9 +86,7 @@ public class WebhookEventService {
     }
 
     private Task changeTaskStatus(Long taskId, TaskStatus status) {
-        Task task = taskService.getTaskById(taskId);
-        task.setStatus(status);
-        return taskRepository.save(task);
+        return taskService.updateTaskStatus(taskId, status, "GitHub webhook");
     }
 
     private void processPullRequestByAction(String payload, GitHubPullRequestPayload pullRequestPayload, Long taskId) {
