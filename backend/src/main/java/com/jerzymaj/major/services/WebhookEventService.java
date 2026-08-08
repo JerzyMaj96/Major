@@ -9,4 +9,8 @@ import org.springframework.stereotype.Service;
 public class WebhookEventService {
 
     private final WebhookEventRepository webhookEventRepository;
+
+    public void processEvent(String eventType, String payload) {
+
+    }
 }
