@@ -2,17 +2,21 @@ package com.jerzymaj.major.unit_tests;
 
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.WebhookEvent;
+import com.jerzymaj.major.models.enums.EventType;
 import com.jerzymaj.major.models.enums.TaskStatus;
+import com.jerzymaj.major.models.enums.WebhookEventStatus;
 import com.jerzymaj.major.repos.WebhookEventRepository;
 import com.jerzymaj.major.services.TaskService;
 import com.jerzymaj.major.services.WebhookEventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -48,11 +52,90 @@ public class WebhookEventServiceTest {
     @Test
     public void shouldProcessPushWebhookEvent_IfSuccess() {
         String eventType = "push";
-        String payload = "{ \"ref\": \"refs/heads/task-123\" }";
+        String payload = """
+                {
+                "ref": "refs/heads/task-123"
+                }
+                """;
 
         webhookEventService.processEvent(eventType, payload);
 
         verify(webhookEventRepository).save(any(WebhookEvent.class));
-        verify(taskService).updateTaskStatus(eq(123L),eq(TaskStatus.IN_PROGRESS), anyString());
+        verify(taskService).updateTaskStatus(eq(123L), eq(TaskStatus.IN_PROGRESS), anyString());
+    }
+
+    @Test
+    public void shouldProcessOpenedPullRequestWebhookEvent_IfSuccess() {
+        String eventType = "pull_request";
+        String payload = """
+                {
+                  "action": "opened",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-123"
+                    },
+                    "merged": false
+                  }
+                }
+                """;
+
+
+        webhookEventService.processEvent(eventType, payload);
+
+        verify(webhookEventRepository).save(any(WebhookEvent.class));
+        verify(taskService).updateTaskStatus(eq(123L), eq(TaskStatus.IN_REVIEW), anyString());
+    }
+
+    @Test
+    public void shouldProcessClosedPullRequestWebhookEventWhenMerged_IfSuccess() {
+        String eventType = "pull_request";
+        String payload = """
+                {
+                  "action": "closed",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-123"
+                    },
+                    "merged": true
+                  }
+                }
+                """;
+
+        webhookEventService.processEvent(eventType, payload);
+
+        ArgumentCaptor<WebhookEvent> webhookEventCaptor = ArgumentCaptor.forClass(WebhookEvent.class);
+
+        verify(webhookEventRepository).save(webhookEventCaptor.capture());
+        verify(taskService).updateTaskStatus(eq(123L), eq(TaskStatus.DONE), anyString());
+
+        WebhookEvent capturedWebhookEvent = webhookEventCaptor.getValue();
+        assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_MERGED);
+        assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+    }
+
+    @Test
+    public void shouldProcessClosedPullRequestWebhookEventWhenNotMerged_IfSuccess() {
+        String eventType = "pull_request";
+        String payload = """
+                {
+                  "action": "closed",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-123"
+                    },
+                    "merged": false
+                  }
+                }
+                """;
+
+        webhookEventService.processEvent(eventType, payload);
+
+        ArgumentCaptor<WebhookEvent> webhookEventCaptor = ArgumentCaptor.forClass(WebhookEvent.class);
+
+        verify(webhookEventRepository).save(webhookEventCaptor.capture());
+
+        WebhookEvent capturedWebhookEvent = webhookEventCaptor.getValue();
+        assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_CLOSED);
+        assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
     }
 }
