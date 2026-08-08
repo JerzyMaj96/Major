@@ -1,0 +1,58 @@
+package com.jerzymaj.major.unit_tests;
+
+import com.jerzymaj.major.models.Task;
+import com.jerzymaj.major.models.WebhookEvent;
+import com.jerzymaj.major.models.enums.TaskStatus;
+import com.jerzymaj.major.repos.WebhookEventRepository;
+import com.jerzymaj.major.services.TaskService;
+import com.jerzymaj.major.services.WebhookEventService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class WebhookEventServiceTest {
+
+    @Mock
+    private WebhookEventRepository webhookEventRepository;
+
+    @Mock
+    private TaskService taskService;
+
+    @InjectMocks
+    private WebhookEventService webhookEventService;
+
+    private Task testTask;
+
+    @BeforeEach
+    public void setup() {
+        testTask = Task.builder()
+                .id(123L)
+                .title("Test Task")
+                .status(TaskStatus.BACKLOG)
+                .build();
+
+        lenient().when(webhookEventRepository.save(any(WebhookEvent.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        lenient().when(taskService.updateTaskStatus(any(Long.class), any(TaskStatus.class), anyString()))
+                .thenReturn(testTask);
+    }
+
+    @Test
+    public void shouldProcessPushWebhookEvent_IfSuccess() {
+        String eventType = "push";
+        String payload = "{ \"ref\": \"refs/heads/task-123\" }";
+
+        webhookEventService.processEvent(eventType, payload);
+
+        verify(webhookEventRepository).save(any(WebhookEvent.class));
+        verify(taskService).updateTaskStatus(eq(123L),eq(TaskStatus.IN_PROGRESS), anyString());
+    }
+}

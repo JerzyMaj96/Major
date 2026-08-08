@@ -63,7 +63,7 @@ public class WebhookEventService {
     }
 
     private Optional<Long> extractTaskIdFromRef(String ref) {
-        Pattern pattern = Pattern.compile("task-/(\\d+)");
+        Pattern pattern = Pattern.compile("task-(\\d+)");
         Matcher matcher = pattern.matcher(ref);
 
         if (matcher.find()) {
