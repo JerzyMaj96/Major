@@ -82,8 +82,15 @@ public class WebhookEventServiceTest {
 
         webhookEventService.processEvent(eventType, payload);
 
-        verify(webhookEventRepository).save(any(WebhookEvent.class));
+        ArgumentCaptor<WebhookEvent> webhookEventCaptor = ArgumentCaptor.forClass(WebhookEvent.class);
+
+        verify(webhookEventRepository).save(webhookEventCaptor.capture());
         verify(taskService).updateTaskStatus(eq(123L), eq(TaskStatus.IN_REVIEW), anyString());
+
+        WebhookEvent webhookEvent = webhookEventCaptor.getValue();
+        assertThat(webhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_OPENED);
+        assertThat(webhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+
     }
 
     @Test
