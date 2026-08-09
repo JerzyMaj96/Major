@@ -26,7 +26,7 @@ public class GitHubSignatureVerifier {
         );
     }
 
-    private String computeHmac(String payload, String secret) {
+    public String computeHmac(String payload, String secret) {
         try {
             Mac mac = Mac.getInstance(HMAC_ALGORITHM);
 
