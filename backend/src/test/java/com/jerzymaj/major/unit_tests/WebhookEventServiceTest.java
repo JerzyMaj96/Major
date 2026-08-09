@@ -145,4 +145,64 @@ public class WebhookEventServiceTest {
         assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_CLOSED);
         assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
     }
+
+    @Test
+    public void shouldHandleInvalidPushPayload_IfExceptionThrown() {
+        String eventType = "push";
+        String invalidPayload = "{ invalid json }";
+
+        webhookEventService.processEvent(eventType, invalidPayload);
+
+        ArgumentCaptor<WebhookEvent> webhookEventCaptor = ArgumentCaptor.forClass(WebhookEvent.class);
+        verify(webhookEventRepository).save(webhookEventCaptor.capture());
+
+        WebhookEvent capturedWebhookEvent = webhookEventCaptor.getValue();
+        assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.FAILED);
+        assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PUSH);
+        assertThat(capturedWebhookEvent.getErrorMessage()).isNotNull();
+    }
+
+    @Test
+    public void shouldHandleInvalidPullRequestPayload_IfExceptionThrown() {
+        String eventType = "pull_request";
+        String invalidPayload = "{ invalid json }";
+
+        webhookEventService.processEvent(eventType, invalidPayload);
+
+        ArgumentCaptor<WebhookEvent> webhookEventCaptor = ArgumentCaptor.forClass(WebhookEvent.class);
+
+        verify(webhookEventRepository).save(webhookEventCaptor.capture());
+
+        WebhookEvent capturedWebhookEvent = webhookEventCaptor.getValue();
+        assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.FAILED);
+        assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_UNKNOWN);
+        assertThat(capturedWebhookEvent.getErrorMessage()).isNotNull();
+    }
+
+    @Test
+    public void shouldHandleUnhandledPullRequestPayload_IfExceptionThrown() {
+        String eventType = "pull_request";
+        String payload = """
+                {
+                  "action": "unknown_action",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-123"
+                    },
+                    "merged": false
+                  }
+                }
+                """;
+
+        webhookEventService.processEvent(eventType, payload);
+
+        ArgumentCaptor<WebhookEvent> webhookEventCaptor = ArgumentCaptor.forClass(WebhookEvent.class);
+
+        verify(webhookEventRepository).save(webhookEventCaptor.capture());
+
+        WebhookEvent capturedWebhookEvent = webhookEventCaptor.getValue();
+        assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+        assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_OTHER);
+
+    }
 }
