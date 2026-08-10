@@ -39,4 +39,8 @@ public class ActivityLogService {
                 .task(task)
                 .build());
     }
+
+    public List<ActivityLog> getAllActivityLogsLastWeek() {
+        return activityLogRepository.findAllLastWeek();
+    }
 }
