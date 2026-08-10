@@ -1,7 +1,6 @@
 package com.jerzymaj.major.integration_tests;
 
 import com.jerzymaj.major.configuration.WithMockCustomUser;
-import com.jerzymaj.major.exceptions.UserNotFoundException;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
 import com.jerzymaj.major.models.WebhookEvent;
@@ -105,6 +104,29 @@ public class WebhookEventControllerIntegration {
 
     @Test
     @WithMockCustomUser
+    public void  handleGitHubWebhook_PushFailed() throws Exception {
+
+        String payload = "Invalid JSON Payload";
+
+        String signature = "sha256=" + signatureVerifier.computeHmac(payload, githubWebhookSecret);
+
+        mockMvc.perform(post("/webhook/github")
+                        .headers(new HttpHeaders() {{
+                            add("X-Hub-Signature-256", signature);
+                            add("X-GitHub-Event", "push");
+                        }})
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk());
+
+        List<WebhookEvent> events = webhookEventRepository.findAll();
+        assertThat(events).hasSize(1);
+        assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.FAILED);
+        assertThat(events.get(0).getEventType().name()).isEqualTo("PUSH");
+    }
+
+    @Test
+    @WithMockCustomUser
     public void handleGitHubWebhook_PullRequest_OpenedNotMerged() throws Exception {
 
         String payload = """
@@ -137,5 +159,130 @@ public class WebhookEventControllerIntegration {
         assertThat(events).hasSize(1);
         assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
         assertThat(events.get(0).getEventType().name()).isEqualTo("PULL_REQUEST_OPENED");
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void handleGitHubWebhook_PullRequest_ClosedAndMerged() throws Exception {
+
+        String payload = """
+                {
+                  "action": "closed",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-%d"
+                    },
+                    "merged": true
+                  }
+                }
+                """.formatted(testTask.getId());
+
+        String signature = "sha256=" + signatureVerifier.computeHmac(payload, githubWebhookSecret);
+
+        mockMvc.perform(post("/webhook/github")
+                        .headers(new HttpHeaders() {{
+                            add("X-Hub-Signature-256", signature);
+                            add("X-GitHub-Event", "pull_request");
+                        }})
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk());
+
+        Task updatedTask = taskRepository.findById(testTask.getId()).orElseThrow();
+        assertThat(updatedTask.getStatus()).isEqualTo(TaskStatus.DONE);
+
+        List<WebhookEvent> events = webhookEventRepository.findAll();
+        assertThat(events).hasSize(1);
+        assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+        assertThat(events.get(0).getEventType().name()).isEqualTo("PULL_REQUEST_MERGED");
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void handleGitHubWebhook_PullRequest_ClosedNotMerged() throws Exception {
+
+        String payload = """
+                {
+                  "action": "closed",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-%d"
+                    },
+                    "merged": false
+                  }
+                }
+                """.formatted(testTask.getId());
+
+        String signature = "sha256=" + signatureVerifier.computeHmac(payload, githubWebhookSecret);
+
+        mockMvc.perform(post("/webhook/github")
+                        .headers(new HttpHeaders() {{
+                            add("X-Hub-Signature-256", signature);
+                            add("X-GitHub-Event", "pull_request");
+                        }})
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk());
+
+        List<WebhookEvent> events = webhookEventRepository.findAll();
+        assertThat(events).hasSize(1);
+        assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+        assertThat(events.get(0).getEventType().name()).isEqualTo("PULL_REQUEST_CLOSED");
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void handleGitHubWebhook_UnhandledPullRequest() throws Exception {
+
+        String payload = """
+                {
+                  "action": "unknown_action",
+                  "pull_request": {
+                    "head": {
+                      "ref": "refs/heads/task-%d"
+                    },
+                    "merged": false
+                  }
+                }
+                """.formatted(testTask.getId());
+
+        String signature = "sha256=" + signatureVerifier.computeHmac(payload, githubWebhookSecret);
+
+        mockMvc.perform(post("/webhook/github")
+                        .headers(new HttpHeaders() {{
+                            add("X-Hub-Signature-256", signature);
+                            add("X-GitHub-Event", "pull_request");
+                        }})
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk());
+
+        List<WebhookEvent> events = webhookEventRepository.findAll();
+        assertThat(events).hasSize(1);
+        assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+        assertThat(events.get(0).getEventType().name()).isEqualTo("PULL_REQUEST_OTHER");
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void handleGitHubWebhook_PullRequest_InvalidRef() throws Exception {
+
+        String payload = "Invalid JSON Payload";
+
+        String signature = "sha256=" + signatureVerifier.computeHmac(payload, githubWebhookSecret);
+
+        mockMvc.perform(post("/webhook/github")
+                        .headers(new HttpHeaders() {{
+                            add("X-Hub-Signature-256", signature);
+                            add("X-GitHub-Event", "pull_request");
+                        }})
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk());
+
+        List<WebhookEvent> events = webhookEventRepository.findAll();
+        assertThat(events).hasSize(1);
+        assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.FAILED);
+        assertThat(events.get(0).getEventType().name()).isEqualTo("PULL_REQUEST_UNKNOWN");
     }
 }
