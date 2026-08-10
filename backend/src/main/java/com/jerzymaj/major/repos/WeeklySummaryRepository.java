@@ -3,5 +3,9 @@ package com.jerzymaj.major.repos;
 import com.jerzymaj.major.models.WeeklySummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface WeeklySummaryRepository extends JpaRepository<WeeklySummary, Long> {
+
+    Optional<WeeklySummary> findFirstByOrderByCreatedAtDesc();
 }
