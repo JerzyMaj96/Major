@@ -36,7 +36,7 @@ public class ActivityLog {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime timeStamp;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private String changedBy;
