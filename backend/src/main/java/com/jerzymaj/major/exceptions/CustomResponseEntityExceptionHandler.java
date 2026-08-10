@@ -53,6 +53,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(WeekSummaryNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleWeekSummaryNotFoundException(WeekSummaryNotFoundException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(ExistingLabelNameException.class)
     public final ResponseEntity<ErrorDetails> handleExistingLabelException(ExistingLabelNameException ex, WebRequest request) {
 
