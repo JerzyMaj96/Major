@@ -1,8 +1,10 @@
 package com.jerzymaj.major.controllers;
 
-import com.jerzymaj.major.models.WeeklySummary;
+import com.jerzymaj.major.Dtos.WeeklySummaryDto;
+import com.jerzymaj.major.mappers.WeeklySummaryMapper;
 import com.jerzymaj.major.services.WeeklySummaryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,12 +19,14 @@ public class WeeklySummaryController {
     private final WeeklySummaryService weeklySummaryService;
 
     @GetMapping("last-week")
-    public WeeklySummary getWeeklySummary() {
-        return weeklySummaryService.getLastWeeksSummary();
+    public ResponseEntity<WeeklySummaryDto> getWeeklySummary() {
+        return ResponseEntity.ok(WeeklySummaryMapper.toDto(weeklySummaryService.getLastWeeksSummary()));
     }
 
     @GetMapping("all")
-    public List<WeeklySummary> getAllWeeklySummary() {
-        return weeklySummaryService.getAllWeeklySummary();
+    public ResponseEntity<List<WeeklySummaryDto>> getAllWeeklySummary() {
+        return ResponseEntity.ok(weeklySummaryService.getAllWeeklySummary().stream()
+                .map(WeeklySummaryMapper::toDto)
+                .toList());
     }
 }
