@@ -58,6 +58,13 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(WebhookEventNotFoundException.class)
+    public  final ResponseEntity<ErrorDetails> handleWebhookEventNotFoundException(WebhookEventNotFoundException ex,
+                                                                                   WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(WeekSummaryNotFoundException.class)
     public final ResponseEntity<ErrorDetails> handleWeekSummaryNotFoundException(WeekSummaryNotFoundException ex, WebRequest request) {
 
