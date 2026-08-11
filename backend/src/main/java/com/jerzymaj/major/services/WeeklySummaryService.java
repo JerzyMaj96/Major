@@ -70,6 +70,10 @@ public class WeeklySummaryService {
                 .orElseThrow(() -> new WeekSummaryNotFoundException("No weekly summary found"));
     }
 
+    public List<WeeklySummary>  getAllWeeklySummary() {
+        return weeklySummaryRepository.findAll();
+    }
+
     private Map<String, Long> getWeeklyStats(List<ActivityLog> activityLogs) {
 
         long tasksCompleted = activityLogs.stream()
