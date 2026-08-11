@@ -66,7 +66,7 @@ public class WeeklySummaryService {
 
     public WeeklySummary getLastWeeksSummary() {
 
-        return weeklySummaryRepository.findFirstByOrderByGeneratedAtDesc()
+        return weeklySummaryRepository.findFirstByOrderByPeriodEndDesc()
                 .orElseThrow(() -> new WeekSummaryNotFoundException("No weekly summary found"));
     }
 
