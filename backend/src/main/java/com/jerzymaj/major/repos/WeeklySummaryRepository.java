@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface WeeklySummaryRepository extends JpaRepository<WeeklySummary, Long> {
 
-    Optional<WeeklySummary> findFirstByOrderByCreatedAtDesc();
+    Optional<WeeklySummary> findFirstByOrderByGeneratedAtDesc();
 }
