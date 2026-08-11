@@ -1,14 +1,12 @@
 package com.jerzymaj.major.controllers;
 
+import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.security.GitHubSignatureVerifier;
 import com.jerzymaj.major.services.WebhookEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,5 +30,13 @@ public class WebhookEventController {
         webhookEventService.processEvent(eventType, payload);
 
         return ResponseEntity.ok("Webhook received");
+    }
+
+    @PostMapping(ApiRoutes.BASE_API + "/webhook-events/{webhookEventId}/retry")
+    public ResponseEntity<Void> retryHandleGitHubWebhook(@PathVariable Long webhookEventId) {
+
+        webhookEventService.retryProcessWebhookEvent(webhookEventId);
+
+        return ResponseEntity.noContent().build();
     }
 }
