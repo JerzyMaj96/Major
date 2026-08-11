@@ -28,6 +28,12 @@ public class WeeklySummary {
     private String content;
 
     @Column(nullable = false)
+    private Long tasksCompleted;
+
+    @Column(nullable = false)
+    private Long tasksCreated;
+
+    @Column(nullable = false)
     private LocalDate periodStart;
 
     @Column(nullable = false)
