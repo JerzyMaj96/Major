@@ -150,7 +150,7 @@ public class TaskService {
         simpMessagingTemplate.convertAndSend("/topic/task-updates", TaskMapper.toDto(savedTask));
 
         activityLogService.createActivityLog(savedTask, ChangeType.STATUS_CHANGE, status.toString(),
-                "Status changed to: " + taskStatus.name(), changedBy);
+                taskStatus.name(), changedBy);
 
         return savedTask;
     }
