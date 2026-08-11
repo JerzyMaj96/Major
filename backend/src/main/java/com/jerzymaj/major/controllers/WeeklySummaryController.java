@@ -17,7 +17,7 @@ public class WeeklySummaryController {
     private final WeeklySummaryService weeklySummaryService;
 
     @GetMapping("last-week")
-    public List<WeeklySummary> getWeeklySummary() {
+    public WeeklySummary getWeeklySummary() {
         return weeklySummaryService.getLastWeeksSummary();
     }
 
