@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jerzymaj.major.Dtos.GitHubPullRequestPayload;
 import com.jerzymaj.major.Dtos.GitHubPushPayload;
 import com.jerzymaj.major.exceptions.TaskNotFoundException;
+import com.jerzymaj.major.exceptions.WebhookEventNotFoundException;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.WebhookEvent;
 import com.jerzymaj.major.models.enums.EventType;
@@ -60,6 +61,27 @@ public class WebhookEventService {
                 log.error("Failed to process pull_request webhook event", ex);
             }
         }
+    }
+
+    public void retryProcessWebhookEvent(Long webhookEventId) {
+        WebhookEvent webhookEvent = webhookEventRepository.findById(webhookEventId)
+                .orElseThrow(() -> new WebhookEventNotFoundException("Webhook event not found with id: " + webhookEventId));
+
+        if (webhookEvent.getStatus() != WebhookEventStatus.FAILED) {
+            throw new IllegalStateException("Only failed events can be retried");
+        }
+
+        String rawEventType = mapEventTypeToRawString(webhookEvent.getEventType());
+
+        processEvent(rawEventType, webhookEvent.getPayload());
+    }
+
+    private String mapEventTypeToRawString(EventType eventType) {
+        return switch (eventType) {
+            case PUSH -> "push";
+            case PULL_REQUEST_OPENED, PULL_REQUEST_MERGED, PULL_REQUEST_CLOSED, PULL_REQUEST_OTHER,
+                 PULL_REQUEST_UNKNOWN -> "pull_request";
+        };
     }
 
     private Optional<Long> extractTaskIdFromRef(String ref) {
