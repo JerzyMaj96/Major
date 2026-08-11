@@ -14,7 +14,7 @@ public final class ActivityLogMapper {
                 activityLog.getChangeType(),
                 activityLog.getOldValue(),
                 activityLog.getNewValue(),
-                activityLog.getTimeStamp(),
+                activityLog.getCreatedAt(),
                 activityLog.getChangedBy()
         );
     }
