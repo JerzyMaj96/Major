@@ -16,7 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.setAllowExtractingPrivateFields;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -204,5 +207,19 @@ public class WebhookEventServiceUnit {
         assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
         assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_OTHER);
 
+    }
+
+    @Test
+    public void shouldGetWebhookEventByStatus_If_Success() {
+        WebhookEvent webhookEvent = WebhookEvent.builder()
+                .status(WebhookEventStatus.FAILED)
+                .errorMessage("test error message")
+                .build();
+
+        when(webhookEventRepository.findByStatus(WebhookEventStatus.FAILED)).thenReturn(List.of(webhookEvent));
+
+        List<WebhookEvent> actualResult = webhookEventRepository.findByStatus(WebhookEventStatus.FAILED);
+
+        assertThat(actualResult).isEqualTo(List.of(webhookEvent));
     }
 }

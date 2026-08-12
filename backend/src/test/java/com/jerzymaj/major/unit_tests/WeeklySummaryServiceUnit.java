@@ -2,8 +2,6 @@ package com.jerzymaj.major.unit_tests;
 
 import com.jerzymaj.major.exceptions.NoActivityLogsException;
 import com.jerzymaj.major.models.ActivityLog;
-import com.jerzymaj.major.models.Task;
-import com.jerzymaj.major.models.User;
 import com.jerzymaj.major.models.WeeklySummary;
 import com.jerzymaj.major.models.enums.ChangeType;
 import com.jerzymaj.major.repos.WeeklySummaryRepository;
@@ -24,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WeeklySummaryUnit {
+public class WeeklySummaryServiceUnit {
 
     @Mock
     private WeeklySummaryRepository weeklySummaryRepository;
