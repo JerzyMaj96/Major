@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,6 +75,10 @@ public class WebhookEventService {
         String rawEventType = mapEventTypeToRawString(webhookEvent.getEventType());
 
         processEvent(rawEventType, webhookEvent.getPayload());
+    }
+
+    public List<WebhookEvent> getWebhookEventByStatus(WebhookEventStatus status) {
+        return webhookEventRepository.findByStatus(status);
     }
 
     private String mapEventTypeToRawString(EventType eventType) {
