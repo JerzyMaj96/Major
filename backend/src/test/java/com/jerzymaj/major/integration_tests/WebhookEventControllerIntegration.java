@@ -308,6 +308,6 @@ public class WebhookEventControllerIntegration {
                 .param("status", WebhookEventStatus.FAILED.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].webhookEventStatus").value(WebhookEventStatus.FAILED.toString()));
+                .andExpect(jsonPath("$[0].status").value(WebhookEventStatus.FAILED.toString()));
     }
 }
