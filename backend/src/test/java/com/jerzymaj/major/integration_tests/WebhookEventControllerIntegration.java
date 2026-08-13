@@ -27,7 +27,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -284,5 +286,28 @@ public class WebhookEventControllerIntegration {
         assertThat(events).hasSize(1);
         assertThat(events.get(0).getStatus()).isEqualTo(WebhookEventStatus.FAILED);
         assertThat(events.get(0).getEventType().name()).isEqualTo("PULL_REQUEST_UNKNOWN");
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void retrieveWebhookEventsByStatus() throws Exception {
+        String payload = "Invalid JSON Payload";
+
+        String signature = "sha256=" + signatureVerifier.computeHmac(payload, githubWebhookSecret);
+
+        mockMvc.perform(post("/webhook/github")
+                        .headers(new HttpHeaders() {{
+                            add("X-Hub-Signature-256", signature);
+                            add("X-GitHub-Event", "pull_request");
+                        }})
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(payload))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/major/api/webhook-events")
+                .param("status", WebhookEventStatus.FAILED.toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].webhookEventStatus").value(WebhookEventStatus.FAILED.toString()));
     }
 }
