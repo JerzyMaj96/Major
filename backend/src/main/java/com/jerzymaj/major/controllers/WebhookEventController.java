@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiRoutes.BASE_API)
 @RequiredArgsConstructor
 public class WebhookEventController {
 
@@ -38,7 +37,7 @@ public class WebhookEventController {
         return ResponseEntity.ok("Webhook received");
     }
 
-    @PostMapping("/webhook-events/{webhookEventId}/retry")
+    @PostMapping(ApiRoutes.BASE_API + "/webhook-events/{webhookEventId}/retry")
     public ResponseEntity<Void> retryHandleGitHubWebhook(@PathVariable Long webhookEventId) {
 
         webhookEventService.retryProcessWebhookEvent(webhookEventId);
@@ -46,7 +45,7 @@ public class WebhookEventController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/webhook-events")
+    @GetMapping(ApiRoutes.BASE_API + "/webhook-events")
     public ResponseEntity<List<WebhookEventDto>> retrieveWebhookEventsByStatus(@RequestParam("status") WebhookEventStatus webhookEventStatus) {
 
         return ResponseEntity.ok(webhookEventService.getWebhookEventByStatus(webhookEventStatus).stream()
