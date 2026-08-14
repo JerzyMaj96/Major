@@ -11,7 +11,7 @@ public record GlobalActivityLogDto(
         ChangeType changeType,
         String oldValue,
         String newValue,
-        LocalDateTime timestamp,
+        LocalDateTime createdAt,
         String changedBy
 ) {
 }
