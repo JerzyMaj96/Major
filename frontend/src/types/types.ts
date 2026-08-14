@@ -11,6 +11,11 @@ export interface UserSummary {
   name: string;
 }
 
+export interface UserRegister {
+    name: string;
+    password: string;
+}
+
 export type TaskStatus = "BACKLOG" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
 
 export interface Task {
