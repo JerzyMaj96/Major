@@ -4,6 +4,8 @@ import com.jerzymaj.major.Dtos.RegisterUserDto;
 import com.jerzymaj.major.Dtos.UserDto;
 import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.mappers.UserMapper;
+import com.jerzymaj.major.models.User;
+import com.jerzymaj.major.security.AuthFacade;
 import com.jerzymaj.major.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final AuthFacade authFacade;
     private final UserService userService;
 
     @PostMapping("/register")
@@ -29,6 +32,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> retrieveUserById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(UserMapper.toDto(userService.getUserById(id)));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> retrieveCurrentUser() {
+        User currentUser = authFacade.getCurrentUser();
+        return ResponseEntity.ok(UserMapper.toDto(currentUser));
     }
 
     @DeleteMapping("/delete-me")
