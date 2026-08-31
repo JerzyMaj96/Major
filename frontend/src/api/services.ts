@@ -1,4 +1,4 @@
-import type { User, UserRegister } from "../types/types";
+import type { User, UserLogin, UserRegister } from "../types/types";
 import { authFetch, baseUrl } from "./api_helper";
 
 export const authService = {
@@ -11,11 +11,11 @@ export const authService = {
     if (!response.ok) throw new Error(await response.text());
     return response.json() as Promise<User>;
   },
-  login: async (name: string, password: string) => {
+  login: async (credentials: UserLogin): Promise<string> => {
     const response = await fetch(`${baseUrl}/major/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, password }),
+      body: JSON.stringify(credentials),
     });
     if (!response.ok) throw new Error(await response.text());
     return response.text();

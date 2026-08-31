@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { getAuthToken, setAuthToken } from "../api/api_helper";
 import { authService } from "../api/services";
-import type { User } from "../types/types";
+import type { User, UserLogin } from "../types/types";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -25,8 +25,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     initAuth();
   }, []);
 
-  const login = async (username: string, password: string) => {
-    const token = await authService.login(username, password);
+  const login = async (credentials: UserLogin) => {
+    const token = await authService.login(credentials);
     setAuthToken(token);
     const userData: User = await authService.getCurrentUser();
     setUser(userData);
