@@ -12,8 +12,14 @@ export interface UserSummary {
 }
 
 export interface UserRegister {
-    name: string;
-    password: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface UserLogin {
+  name: string;
+  password: string;
 }
 
 export type TaskStatus = "BACKLOG" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
