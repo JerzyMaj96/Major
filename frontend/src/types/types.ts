@@ -18,7 +18,7 @@ export interface UserRegister {
 }
 
 export interface UserLogin {
-  name: string;
+  identifier: string;
   password: string;
 }
 
