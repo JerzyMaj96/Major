@@ -2,6 +2,8 @@ package com.jerzymaj.major.configuration;
 
 import com.jerzymaj.major.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,11 @@ public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ChatClient chatClient(ChatClient.Builder builder) {
+        return builder.build();
     }
 
     @Bean
