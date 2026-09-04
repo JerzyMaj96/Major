@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import type { UserRegister } from "../../types/types";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../api/services";
+import { useFormState } from "../../hooks/useFormState";
 
 function RegisterPage() {
-  const [user, setUser] = useState<UserRegister>({
+  const {values: user, setValues, handleChange} = useFormState<UserRegister>({
     name: "",
     email: "",
     password: "",
   });
 
   const navigate = useNavigate();
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = event.target;
-    setUser((prevVal) => ({ ...prevVal, [name]: value }));
-  };
 
   const handleUser = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,7 +23,7 @@ function RegisterPage() {
         "Your user account has been successfully created! Your ID is: " +
           data.id,
       );
-      setUser({ name: "", email: "", password: "" });
+      setValues({ name: "", email: "", password: "" });
       navigate("/login");
     } catch (error) {
       if (error instanceof Error) {
