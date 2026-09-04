@@ -6,6 +6,7 @@ import com.jerzymaj.major.configuration.WithMockCustomUser;
 import com.jerzymaj.major.models.User;
 import com.jerzymaj.major.models.enums.UserRole;
 import com.jerzymaj.major.repos.UserRepository;
+import com.jerzymaj.major.services.GptService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -33,6 +35,9 @@ public class UserControllerIntegration {
     private UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @MockitoBean
+    private GptService gptService;
 
     @BeforeEach
     public void setUp() {
