@@ -46,6 +46,9 @@ function LoginPage() {
           onChange={handleChange}
         />
         <button type="submit">Login</button>
+        <button type="button" onClick={() => navigate("/register")}>
+          Register
+        </button>
       </form>
     </div>
   );
