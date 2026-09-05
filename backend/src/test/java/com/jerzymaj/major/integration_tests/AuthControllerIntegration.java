@@ -3,17 +3,12 @@ package com.jerzymaj.major.integration_tests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jerzymaj.major.Dtos.LoginRequest;
 import com.jerzymaj.major.Dtos.RegisterUserDto;
-import com.jerzymaj.major.services.GptService;
+import com.jerzymaj.major.configuration.BaseIntegrationTest;
 import com.jerzymaj.major.services.UserService;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.emptyString;
@@ -22,11 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Transactional
-public class AuthControllerIntegration {
+public class AuthControllerIntegration extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,9 +26,6 @@ public class AuthControllerIntegration {
 
     @Autowired
     private UserService userService;
-
-    @MockitoBean
-    private GptService gptService;
 
     @BeforeEach
     public void setup() {
