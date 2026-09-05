@@ -4,11 +4,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import "./App.css";
 import { useAuth } from "./hooks/useAuth";
 import type { ReactNode } from "react";
 import { AuthProvider } from "./context/AuthProvider";
-import Header from "./components/Header/Header";
+import Header from "./components/Header";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashboardPage from "./pages/DashboardPage/DashboardPage";
