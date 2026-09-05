@@ -60,6 +60,9 @@ function RegisterPage() {
           onChange={handleChange}
         />
         <button type="submit"> Register</button>
+        <button type="button" onClick={() => navigate("/login")}>
+          Back to Login
+        </button>
       </form>
     </div>
   );
