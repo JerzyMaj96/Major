@@ -4,7 +4,6 @@ import com.jerzymaj.major.configuration.WithMockCustomUser;
 import com.jerzymaj.major.models.WeeklySummary;
 import com.jerzymaj.major.repos.WeeklySummaryRepository;
 import com.jerzymaj.major.services.GptService;
-import com.jerzymaj.major.services.WeeklySummaryService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
