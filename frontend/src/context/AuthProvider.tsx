@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { getAuthToken, setAuthToken } from "../api/api_helper";
-import { authService } from "../api/services";
+import { authService, userService } from "../api/services";
 import type { User, UserLogin } from "../types/types";
 import { AuthContext } from "./AuthContext";
 
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = getAuthToken();
       if (token) {
         try {
-          const userData: User = await authService.getCurrentUser();
+          const userData: User = await userService.getCurrentUser();
           setUser(userData);
         } catch (ex) {
           console.error("Auth check failed", ex);
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (credentials: UserLogin) => {
     const token = await authService.login(credentials);
     setAuthToken(token);
-    const userData: User = await authService.getCurrentUser();
+    const userData: User = await userService.getCurrentUser();
     setUser(userData);
   };
 
