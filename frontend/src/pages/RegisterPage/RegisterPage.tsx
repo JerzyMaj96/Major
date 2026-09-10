@@ -1,7 +1,7 @@
 import React from "react";
 import type { UserRegister } from "../../types/types";
 import { useNavigate } from "react-router-dom";
-import { authService } from "../../api/services";
+import { userService } from "../../api/services";
 import { useFormState } from "../../hooks/useFormState";
 
 function RegisterPage() {
@@ -17,7 +17,7 @@ function RegisterPage() {
     event.preventDefault();
 
     try {
-      const data = await authService.register(user);
+      const data = await userService.register(user);
 
       alert(
         "Your user account has been successfully created! Your ID is: " +
