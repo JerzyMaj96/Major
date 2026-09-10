@@ -1,4 +1,10 @@
-import type { User, UserLogin, UserRegister } from "../types/types";
+import type {
+  CreateTask,
+  Task,
+  User,
+  UserLogin,
+  UserRegister,
+} from "../types/types";
 import { authFetch, baseUrl } from "./api_helper";
 
 export const authService = {
@@ -31,5 +37,22 @@ export const userService = {
   deleteAccount: async (): Promise<void> => {
     const response = await authFetch("DELETE", `/major/api/users/delete-me`);
     if (!response.ok) throw new Error("Failed to delete account");
+  },
+};
+
+export const taskService = {
+  getTasks: async (): Promise<Task[]> => {
+    const response = await authFetch("GET", `/major/api/tasks`);
+    if (!response.ok) throw new Error("Failed to fetch tasks");
+    return response.json() as Promise<Task[]>;
+  },
+  createTask: async (taskData: CreateTask): Promise<Task> => {
+    const response = await authFetch(
+      "POST",
+      `/major/api/tasks`,
+      JSON.stringify(taskData),
+    );
+    if (!response.ok) throw new Error("Failed to create task");
+    return response.json() as Promise<Task>;
   },
 };
