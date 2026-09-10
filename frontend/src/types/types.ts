@@ -24,6 +24,13 @@ export interface UserLogin {
 
 export type TaskStatus = "BACKLOG" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
 
+export interface CreateTask {
+  title: string;
+  description: string;
+  assigneeId: number | null;
+  generateDescription: boolean;
+}
+
 export interface Task {
   id: number;
   title: string;
