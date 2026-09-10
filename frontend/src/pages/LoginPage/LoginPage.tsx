@@ -1,3 +1,4 @@
+import "./LoginPage.css";
 import type { UserLogin } from "../../types/types";
 import { useFormState } from "../../hooks/useFormState";
 import { useNavigate } from "react-router";
@@ -28,7 +29,7 @@ function LoginPage() {
   };
 
   return (
-    <div>
+    <div className="login-page">
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <input

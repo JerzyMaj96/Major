@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Header.css";
 import { useAuth } from "../hooks/useAuth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { userService } from "../api/services";

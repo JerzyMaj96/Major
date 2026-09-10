@@ -1,4 +1,5 @@
 import React from "react";
+import "./RegisterPage.css";
 import type { UserRegister } from "../../types/types";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../../api/services";
