@@ -3,6 +3,7 @@ import "./DashboardPage.css";
 import type { Task, TaskStatus } from "../../types/types";
 import { taskService } from "../../api/services";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import CreateTaskModal from "../../components/CreateTaskModal/CreateTaskModal";
 
 const COLUMNS: { status: TaskStatus; label: string }[] = [
   { status: "BACKLOG", label: "Backlog" },
@@ -30,7 +31,7 @@ function DashboardPage() {
     };
 
     fetchTasks();
-  }, []);
+  }, [tasks]);
 
   return (
     <div className="dashboard-page">
@@ -39,25 +40,21 @@ function DashboardPage() {
       <div className="board">
         {COLUMNS.map((column) => {
           const columnTasks = tasks.filter(
-            (task) => task.status === column.status
+            (task) => task.status === column.status,
           );
 
           return (
             <div className="board-column" key={column.status}>
               <div className="board-column-header">
                 <span>{column.label}</span>
-                <span className="board-column-count">
-                  {columnTasks.length}
-                </span>
+                <span className="board-column-count">{columnTasks.length}</span>
               </div>
 
               <div className="board-column-body">
                 {columnTasks.map((task) => (
                   <div className="task-card" key={task.id}>
                     <p className="task-card-title">{task.title}</p>
-                    <p className="task-card-description">
-                      {task.description}
-                    </p>
+                    <p className="task-card-description">{task.description}</p>
                   </div>
                 ))}
 
@@ -79,8 +76,7 @@ function DashboardPage() {
             <span className="close" onClick={() => setShowCreateModal(false)}>
               &times;
             </span>
-            <h2>Create Task</h2>
-            {/* Create Task Form */}
+            {showCreateModal && <CreateTaskModal />}
           </div>
         </div>
       )}
