@@ -7,7 +7,7 @@ import {
 import { useAuth } from "./hooks/useAuth";
 import type { ReactNode } from "react";
 import { AuthProvider } from "./context/AuthProvider";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashboardPage from "./pages/DashboardPage/DashboardPage";

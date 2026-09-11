@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./Header.css";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { userService } from "../api/services";
+import { userService } from "../../api/services";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 function Header() {
