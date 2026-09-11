@@ -27,7 +27,7 @@ export type TaskStatus = "BACKLOG" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
 export interface CreateTask {
   title: string;
   description: string;
-  assigneeId: number | null;
+  assigneeId: number | undefined;
   generateDescription: boolean;
 }
 
