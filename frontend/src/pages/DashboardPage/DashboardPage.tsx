@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import "./DashboardPage.css";
-import type { Task } from "../../types/types";
+import type { Task, TaskStatus } from "../../types/types";
 import { taskService } from "../../api/services";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+
+const COLUMNS: { status: TaskStatus; label: string }[] = [
+  { status: "BACKLOG", label: "Backlog" },
+  { status: "IN_PROGRESS", label: "In Progress" },
+  { status: "IN_REVIEW", label: "In Review" },
+  { status: "DONE", label: "Done" },
+];
 
 function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -29,43 +36,54 @@ function DashboardPage() {
     <div className="dashboard-page">
       <h1>Dashboard</h1>
       <p>Welcome to the dashboard!</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Backlog</th>
-            <th>In Progress</th>
-            <th>In Review</th>
-            <th>Done</th>
-          </tr>
-        </thead>
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <tbody key={task.id}>
-              <tr>
-                <td>{task.title}</td>
-                <td>{task.description}</td>
-              </tr>
-            </tbody>
-          ))
-        ) : (
-          <ControlPointIcon
-            className="add-task-icon"
-            onClick={() => setShowCreateModal(true)}
-          />
-        )}
+      <div className="board">
+        {COLUMNS.map((column) => {
+          const columnTasks = tasks.filter(
+            (task) => task.status === column.status
+          );
 
-        {showCreateModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <span className="close" onClick={() => setShowCreateModal(false)}>
-                &times;
-              </span>
-              <h2>Create Task</h2>
-              {/* Create Task Form */}
+          return (
+            <div className="board-column" key={column.status}>
+              <div className="board-column-header">
+                <span>{column.label}</span>
+                <span className="board-column-count">
+                  {columnTasks.length}
+                </span>
+              </div>
+
+              <div className="board-column-body">
+                {columnTasks.map((task) => (
+                  <div className="task-card" key={task.id}>
+                    <p className="task-card-title">{task.title}</p>
+                    <p className="task-card-description">
+                      {task.description}
+                    </p>
+                  </div>
+                ))}
+
+                {column.status === "BACKLOG" && (
+                  <ControlPointIcon
+                    className="add-task-icon"
+                    onClick={() => setShowCreateModal(true)}
+                  />
+                )}
+              </div>
             </div>
+          );
+        })}
+      </div>
+
+      {showCreateModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setShowCreateModal(false)}>
+              &times;
+            </span>
+            <h2>Create Task</h2>
+            {/* Create Task Form */}
           </div>
-        )}
-      </table>
+        </div>
+      )}
     </div>
   );
 }
