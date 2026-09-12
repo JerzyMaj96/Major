@@ -16,22 +16,41 @@ function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const data = await taskService.getTasks();
-        setTasks(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          alert("Error: " + error.message);
-        } else {
-          alert("An unknown error occurred");
-        }
+  const fetchTasks = async () => {
+    try {
+      const data = await taskService.getTasks();
+      setTasks(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert("Error: " + error.message);
+      } else {
+        alert("An unknown error occurred");
       }
-    };
+    }
+  };
 
-    fetchTasks();
-  }, [tasks]);
+  useEffect(() => {
+    let ignore = false;
+
+    taskService
+      .getTasks()
+      .then((data) => {
+        if (!ignore) setTasks(data);
+      })
+      .catch((error) => {
+        if (!ignore) {
+          alert(
+            error instanceof Error
+              ? "Error: " + error.message
+              : "An unknown error occurred",
+          );
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <div className="dashboard-page">
@@ -76,7 +95,14 @@ function DashboardPage() {
             <span className="close" onClick={() => setShowCreateModal(false)}>
               &times;
             </span>
-            {showCreateModal && <CreateTaskModal />}
+            {showCreateModal && (
+              <CreateTaskModal
+                onTaskCreated={() => {
+                  fetchTasks();
+                  setShowCreateModal(false);
+                }}
+              />
+            )}
           </div>
         </div>
       )}
