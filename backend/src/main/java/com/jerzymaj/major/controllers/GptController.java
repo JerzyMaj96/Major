@@ -13,7 +13,7 @@ public class GptController {
 
     private final GptService gptService;
 
-    @PostMapping(ApiRoutes.BASE_API + "/generate-description")
+    @PostMapping(ApiRoutes.BASE_API + "/gpt/generate-description")
     public ResponseEntity<String> generateTaskDescription(String title) {
 
         String description = gptService.generateTaskDescription(title);
