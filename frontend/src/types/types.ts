@@ -28,7 +28,6 @@ export interface CreateTask {
   title: string;
   description: string;
   assigneeId: number | undefined;
-  generateDescription: boolean;
 }
 
 export interface Task {
