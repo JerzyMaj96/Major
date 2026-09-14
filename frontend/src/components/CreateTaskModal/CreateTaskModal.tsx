@@ -1,4 +1,4 @@
-import { taskService } from "../../api/services";
+import { gptService, taskService } from "../../api/services";
 import type { CreateTask } from "../../types/types";
 import { useFormState } from "../../hooks/useFormState";
 import "./CreateTaskModal.css";
@@ -12,7 +12,6 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
     title: "",
     description: "",
     assigneeId: undefined,
-    generateDescription: false,
   });
 
   const handleCreateTask = async (
@@ -82,16 +81,24 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
           />
         </div>
 
-        <label className="create-task-checkbox-row" htmlFor="generateDescription">
-          <input
-            id="generateDescription"
-            type="checkbox"
-            name="generateDescription"
-            checked={values.generateDescription}
-            onChange={handleChange}
-          />
-          <span>Generate description with AI</span>
-        </label>
+        <button
+          type="button"
+          className="generate-description-btn"
+          onClick={async () => {
+            const generatedDescription = await gptService.generateDescription(
+              values.title,
+            );
+            handleChange({
+              target: {
+                name: "description",
+                value: generatedDescription,
+                type: "text",
+              },
+            } as React.ChangeEvent<HTMLTextAreaElement>);
+          }}
+        >
+          Generate Description
+        </button>
 
         <div className="create-task-actions">
           <button type="submit" className="create-task-submit-btn">
