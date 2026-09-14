@@ -1,6 +1,7 @@
 import { taskService } from "../../api/services";
 import type { CreateTask } from "../../types/types";
 import { useFormState } from "../../hooks/useFormState";
+import "./CreateTaskModal.css";
 
 interface CreateTaskModalProps {
   onTaskCreated: () => void;
@@ -35,33 +36,68 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
   return (
     <div className="create-task-modal">
       <h2>Create Task</h2>
-      <form onSubmit={handleCreateTask}>
-        <input
-          type="text"
-          placeholder="Task Title"
-          value={values.title}
-          onChange={handleChange}
-        />
-        <textarea
-          placeholder="Task Description"
-          value={values.description}
-          onChange={handleChange}
-        ></textarea>
-        <input
-          type="checkbox"
-          name="generateDescription"
-          checked={values.generateDescription}
-          onChange={handleChange}
-        />
-        <input
-          type="number"
-          name="assigneeId"
-          placeholder="Assignee ID"
-          value={values.assigneeId}
-          onChange={handleChange}
-        />
-        <label htmlFor="generateDescription">Generate Description</label>
-        <button type="submit">Create Task</button>
+      <form className="create-task-form" onSubmit={handleCreateTask}>
+        <div className="create-task-field">
+          <label className="create-task-label" htmlFor="title">
+            Title
+          </label>
+          <input
+            id="title"
+            type="text"
+            name="title"
+            placeholder="e.g. Design the landing page"
+            value={values.title}
+            onChange={handleChange}
+            className="create-task-title-input"
+            autoFocus
+          />
+        </div>
+
+        <div className="create-task-field">
+          <label className="create-task-label" htmlFor="description">
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Add a more detailed description..."
+            value={values.description}
+            onChange={handleChange}
+            className="create-task-description-input"
+          ></textarea>
+        </div>
+
+        <div className="create-task-field">
+          <label className="create-task-label" htmlFor="assigneeId">
+            Assignee ID
+          </label>
+          <input
+            id="assigneeId"
+            type="number"
+            name="assigneeId"
+            placeholder="Enter user ID"
+            value={values.assigneeId}
+            onChange={handleChange}
+            className="create-task-assignee-input"
+          />
+        </div>
+
+        <label className="create-task-checkbox-row" htmlFor="generateDescription">
+          <input
+            id="generateDescription"
+            type="checkbox"
+            name="generateDescription"
+            checked={values.generateDescription}
+            onChange={handleChange}
+          />
+          <span>Generate description with AI</span>
+        </label>
+
+        <div className="create-task-actions">
+          <button type="submit" className="create-task-submit-btn">
+            Create Task
+          </button>
+        </div>
       </form>
     </div>
   );
