@@ -83,6 +83,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+    @ExceptionHandler(NoDescriptionException.class)
+    public final ResponseEntity<ErrorDetails> handleNoDescriptionException(NoDescriptionException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
