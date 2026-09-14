@@ -3,6 +3,7 @@ package com.jerzymaj.major.services;
 import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.exceptions.AssigneeMismatchException;
+import com.jerzymaj.major.exceptions.NoDescriptionException;
 import com.jerzymaj.major.exceptions.TaskNotFoundException;
 import com.jerzymaj.major.mappers.TaskMapper;
 import com.jerzymaj.major.models.Label;
@@ -36,12 +37,10 @@ public class TaskService {
         User assignee = createTaskDto.assigneeId() != null ? userService.getUserById(createTaskDto.assigneeId()) : null;
 
         String description;
-        if (createTaskDto.generateDescription()) {
-            description = gptService.generateTaskDescription(createTaskDto.title());
-        } else if (createTaskDto.description() != null && !createTaskDto.description().isBlank()) {
+        if (createTaskDto.description() != null && !createTaskDto.description().isBlank()) {
             description = createTaskDto.description();
         } else {
-            throw new IllegalArgumentException("Description must be provided if generateDescription is false");
+            throw new NoDescriptionException("Description must be provided");
         }
 
         Task task = Task.builder()
