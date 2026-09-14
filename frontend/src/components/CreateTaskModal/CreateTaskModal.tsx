@@ -81,24 +81,25 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
           />
         </div>
 
-        <button
-          type="button"
-          className="generate-description-btn"
-          onClick={async () => {
-            const generatedDescription = await gptService.generateDescription(
-              values.title,
-            );
-            handleChange({
-              target: {
-                name: "description",
-                value: generatedDescription,
-                type: "text",
-              },
-            } as React.ChangeEvent<HTMLTextAreaElement>);
-          }}
-        >
-          Generate Description
-        </button>
+        <div className="create-task-generate-row">
+          <button
+            type="button"
+            className="generate-description-btn"
+            onClick={async () => {
+              const generatedDescription =
+                await gptService.generateDescription(values.title);
+              handleChange({
+                target: {
+                  name: "description",
+                  value: generatedDescription,
+                  type: "text",
+                },
+              } as React.ChangeEvent<HTMLTextAreaElement>);
+            }}
+          >
+            Generate Description
+          </button>
+        </div>
 
         <div className="create-task-actions">
           <button type="submit" className="create-task-submit-btn">
