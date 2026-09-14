@@ -56,3 +56,16 @@ export const taskService = {
     return response.json() as Promise<Task>;
   },
 };
+
+export const gptService = {
+
+  generateDescription: async (title: string): Promise<string> => {
+    const response = await authFetch(
+      "POST",
+      `/major/api/gpt/generate-description`,
+      JSON.stringify({ title }),
+    );
+    if (!response.ok) throw new Error("Failed to generate description");
+    return response.text();
+  }
+};
