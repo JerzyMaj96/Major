@@ -5,6 +5,7 @@ import com.jerzymaj.major.services.GptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,7 +15,7 @@ public class GptController {
     private final GptService gptService;
 
     @PostMapping(ApiRoutes.BASE_API + "/gpt/generate-description")
-    public ResponseEntity<String> generateTaskDescription(String title) {
+    public ResponseEntity<String> generateTaskDescription(@RequestBody String title) {
 
         String description = gptService.generateTaskDescription(title);
 
