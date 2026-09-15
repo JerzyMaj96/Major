@@ -86,8 +86,9 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
             type="button"
             className="generate-description-btn"
             onClick={async () => {
-              const generatedDescription =
-                await gptService.generateDescription(values.title);
+              const generatedDescription = await gptService.generateDescription(
+                values.title,
+              );
               handleChange({
                 target: {
                   name: "description",
@@ -97,7 +98,7 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
               } as React.ChangeEvent<HTMLTextAreaElement>);
             }}
           >
-            Generate Description
+            Generate Description GPT
           </button>
         </div>
 
