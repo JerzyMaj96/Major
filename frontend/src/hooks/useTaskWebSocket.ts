@@ -21,5 +21,5 @@ export const useTaskWebSocket = (onTaskUpdate: (task: Task) => void) => {
     return () => {
       client.deactivate();
     };
-  });
+  }, []);
 };
