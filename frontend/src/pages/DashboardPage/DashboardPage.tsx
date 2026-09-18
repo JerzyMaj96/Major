@@ -4,6 +4,7 @@ import type { Task, TaskStatus } from "../../types/types";
 import { taskService } from "../../api/services";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import CreateTaskModal from "../../components/CreateTaskModal/CreateTaskModal";
+import { useTaskWebSocket } from "../../hooks/useTaskWebSocket";
 
 const COLUMNS: { status: TaskStatus; label: string }[] = [
   { status: "BACKLOG", label: "Backlog" },
@@ -51,6 +52,14 @@ function DashboardPage() {
       ignore = true;
     };
   }, []);
+
+  useTaskWebSocket((updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === updatedTask.id ? updatedTask : task,
+      ),
+    );
+  });
 
   return (
     <div className="dashboard-page">
