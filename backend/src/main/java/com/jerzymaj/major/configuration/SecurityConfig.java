@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/webhook/github").permitAll()
                         .requestMatchers("/major/api/auth/**").permitAll()
                         .requestMatchers("/major/api/users/register").permitAll()
                         .requestMatchers("/major/api/users/**").authenticated()
