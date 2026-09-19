@@ -1,6 +1,7 @@
 import type {
   CreateTask,
   Task,
+  TaskStatus,
   User,
   UserLogin,
   UserRegister,
@@ -55,10 +56,25 @@ export const taskService = {
     if (!response.ok) throw new Error("Failed to create task");
     return response.json() as Promise<Task>;
   },
+  updateTaskStatus: async (
+    taskId: number,
+    newStatus: TaskStatus,
+  ): Promise<Task> => {
+    const response = await authFetch(
+      "PATCH",
+      `/major/api/tasks/${taskId}/status`,
+      JSON.stringify({ status: newStatus }),
+    );
+    if (!response.ok) throw new Error("Failed to update task status");
+    return response.json() as Promise<Task>;
+  },
+  deleteTask: async (taskId: number): Promise<void> => {
+    const response = await authFetch("DELETE", `/major/api/tasks/${taskId}`);
+    if (!response.ok) throw new Error("Failed to delete task");
+  },
 };
 
 export const gptService = {
-
   generateDescription: async (title: string): Promise<string> => {
     const response = await authFetch(
       "POST",
@@ -67,5 +83,5 @@ export const gptService = {
     );
     if (!response.ok) throw new Error("Failed to generate description");
     return response.text();
-  }
+  },
 };
