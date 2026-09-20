@@ -18,7 +18,7 @@ const COLUMNS: { status: TaskStatus; label: string }[] = [
 function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [displayTaskDetailsModal, setDisplayTaskDetailsModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const fetchTasks = async () => {
     try {
@@ -103,37 +103,44 @@ function DashboardPage() {
               label={column.label}
               tasks={tasks.filter((task) => task.status === column.status)}
               onAddClick={() => setShowCreateModal(true)}
-              onClick={() => setDisplayTaskDetailsModal(true)}
+              onClick={(task) => setSelectedTask(task)}
             />
           ))}
         </div>
       </DragDropProvider>
 
-      {showCreateModal ||
-        (displayTaskDetailsModal && (
-          <div className="modal">
-            <div className="modal-content">
-              <span
-                className="close"
-                onClick={() => {
+      {(showCreateModal || selectedTask) && (
+        <div className="modal">
+          <div className="modal-content">
+            <span
+              className="close"
+              onClick={() => {
+                setShowCreateModal(false);
+                setSelectedTask(null);
+              }}
+            >
+              &times;
+            </span>
+            {showCreateModal && (
+              <CreateTaskModal
+                onTaskCreated={() => {
+                  fetchTasks();
                   setShowCreateModal(false);
-                  setDisplayTaskDetailsModal(false);
                 }}
-              >
-                &times;
-              </span>
-              {showCreateModal && (
-                <CreateTaskModal
-                  onTaskCreated={() => {
-                    fetchTasks();
-                    setShowCreateModal(false);
-                  }}
-                />
-              )}
-              {displayTaskDetailsModal && <TaskDetailsModal />}
-            </div>
+              />
+            )}
+            {selectedTask && (
+              <TaskDetailsModal
+                task={selectedTask}
+                onTaskDeleted={() => {
+                  fetchTasks();
+                  setSelectedTask(null);
+                }}
+              />
+            )}
           </div>
-        ))}
+        </div>
+      )}
     </div>
   );
 }
