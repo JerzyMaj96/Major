@@ -15,7 +15,7 @@ function DroppableColumn({
   label: string;
   tasks: Task[];
   onAddClick: () => void;
-  onClick: () => void;
+  onClick: (task: Task) => void;
 }) {
   const { ref } = useDroppable({ id: status });
 
