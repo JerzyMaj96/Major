@@ -9,11 +9,13 @@ function DroppableColumn({
   label,
   tasks,
   onAddClick,
+  onClick,
 }: {
   status: TaskStatus;
   label: string;
   tasks: Task[];
   onAddClick: () => void;
+  onClick: () => void;
 }) {
   const { ref } = useDroppable({ id: status });
 
@@ -26,7 +28,7 @@ function DroppableColumn({
 
       <div ref={ref} className="board-column-body">
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard key={task.id} task={task} onClick={onClick} />
         ))}
 
         {status === "BACKLOG" && (
