@@ -1,0 +1,94 @@
+.task-details-modal {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.task-details-modal > h2 {
+  font-size: 1.3rem;
+}
+
+.task-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.task-details-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.task-details-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.task-details-description,
+.task-details-value {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+}
+
+.task-details-description {
+  min-height: 110px;
+  white-space: pre-wrap;
+}
+
+.task-details-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.task-details-delete-btn {
+  padding: 10px 20px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-danger);
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.task-details-delete-btn:hover {
+  background: var(--color-danger-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.task-details-delete-btn:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 560px) {
+  .task-details-modal {
+    max-width: 100%;
+  }
+
+  .task-details-actions {
+    justify-content: stretch;
+  }
+
+  .task-details-delete-btn {
+    width: 100%;
+  }
+}
