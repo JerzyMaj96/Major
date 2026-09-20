@@ -65,10 +65,6 @@ function DashboardPage() {
   const handleDragEnd = async (event: DragEndEvent) => {
     if (event.canceled) return;
 
-    console.log("Full event:", event);
-    console.log("Source:", event.operation.source);
-    console.log("Target:", event.operation.target);
-
     const source = event.operation.source;
     const target = event.operation.target;
 
