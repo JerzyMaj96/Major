@@ -62,8 +62,7 @@ export const taskService = {
   ): Promise<Task> => {
     const response = await authFetch(
       "PATCH",
-      `/major/api/tasks/${taskId}/status`,
-      JSON.stringify({ status: newStatus }),
+      `/major/api/tasks/${taskId}/status?taskStatus=${newStatus}`,
     );
     if (!response.ok) throw new Error("Failed to update task status");
     return response.json() as Promise<Task>;
