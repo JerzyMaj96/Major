@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import "./DashboardPage.css";
 import type { Task, TaskStatus } from "../../types/types";
 import { taskService } from "../../api/services";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import CreateTaskModal from "../../components/CreateTaskModal/CreateTaskModal";
 import { useTaskWebSocket } from "../../hooks/useTaskWebSocket";
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import DroppableColumn from "../../components/DroppableColumn/DroppableColumn";
 
 const COLUMNS: { status: TaskStatus; label: string }[] = [
   { status: "BACKLOG", label: "Backlog" },
@@ -61,42 +62,53 @@ function DashboardPage() {
     );
   });
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    if (event.canceled) return;
+
+    console.log("Full event:", event);
+    console.log("Source:", event.operation.source);
+    console.log("Target:", event.operation.target);
+
+    const source = event.operation.source;
+    const target = event.operation.target;
+
+    if (!source || !target) return;
+
+    const taskId = source.id as number;
+    const newStatus = target.id as TaskStatus;
+
+    try {
+      const updatedTask = await taskService.updateTaskStatus(taskId, newStatus);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === taskId ? updatedTask : task)),
+      );
+    } catch (error) {
+      alert(
+        error instanceof Error
+          ? "Error: " + error.message
+          : "An unknown error occurred",
+      );
+    }
+  };
+
   return (
     <div className="dashboard-page">
       <h1>Dashboard</h1>
       <p>Welcome to the dashboard!</p>
-      <div className="board">
-        {COLUMNS.map((column) => {
-          const columnTasks = tasks.filter(
-            (task) => task.status === column.status,
-          );
 
-          return (
-            <div className="board-column" key={column.status}>
-              <div className="board-column-header">
-                <span>{column.label}</span>
-                <span className="board-column-count">{columnTasks.length}</span>
-              </div>
-
-              <div className="board-column-body">
-                {columnTasks.map((task) => (
-                  <div className="task-card" key={task.id}>
-                    <p className="task-card-title">{task.title}</p>
-                    <p className="task-card-description">{task.description}</p>
-                  </div>
-                ))}
-
-                {column.status === "BACKLOG" && (
-                  <ControlPointIcon
-                    className="add-task-icon"
-                    onClick={() => setShowCreateModal(true)}
-                  />
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <div className="board">
+          {COLUMNS.map((column) => (
+            <DroppableColumn
+              key={column.status}
+              status={column.status}
+              label={column.label}
+              tasks={tasks.filter((task) => task.status === column.status)}
+              onAddClick={() => setShowCreateModal(true)}
+            />
+          ))}
+        </div>
+      </DragDropProvider>
 
       {showCreateModal && (
         <div className="modal">

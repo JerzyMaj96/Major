@@ -1,0 +1,71 @@
+.board-column {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  min-height: 200px;
+  max-height: calc(100vh - 220px);
+  overflow: hidden;
+}
+
+.board-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.board-column-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.board-column-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.add-task-icon {
+  display: block;
+  margin: 12px auto;
+  font-size: 44px !important;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 8px;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.add-task-icon:hover {
+  color: var(--color-primary-hover);
+  background: var(--color-primary-soft);
+  transform: scale(1.06);
+}
+
+@media (max-width: 900px) {
+  .board-column {
+    max-height: none;
+  }
+}
