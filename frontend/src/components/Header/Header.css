@@ -22,6 +22,67 @@ header h1 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s ease;
+}
+
+header h1:hover {
+  opacity: 0.85;
+}
+
+.pages-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 32px;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 6px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    visibility 0.16s;
+}
+
+.pages-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.pages-menu h2 {
+  padding: 10px 12px;
+  margin: 0;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.pages-menu h2:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+
+.pages-menu h2.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+  font-weight: 700;
 }
 
 .user-box {
@@ -123,5 +184,9 @@ header h1 {
 
   .user-name {
     display: none;
+  }
+
+  .pages-menu {
+    left: 18px;
   }
 }
