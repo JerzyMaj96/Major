@@ -11,6 +11,7 @@ import Header from "./components/Header/Header";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashboardPage from "./pages/DashboardPage/DashboardPage";
+import ActivityLogsPage from "./pages/ActivityLogsPage/ActivityLogsPage";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -48,6 +49,14 @@ function AppLayout() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/activity-logs"
+              element={
+                <ProtectedRoute>
+                  <ActivityLogsPage />
                 </ProtectedRoute>
               }
             />
