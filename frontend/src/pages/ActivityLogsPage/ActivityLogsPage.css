@@ -1,0 +1,107 @@
+.activity-logs-page {
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.activity-logs-page > h1 {
+  font-size: 1.9rem;
+}
+
+.activity-logs-page > p {
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.activity-logs-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.activity-logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
+.activity-logs-table th,
+.activity-logs-table td {
+  text-align: left;
+  padding: 12px 16px;
+}
+
+.activity-logs-table thead th {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.activity-logs-table tbody tr {
+  border-bottom: 1px solid var(--color-border-soft);
+  transition: background-color 0.12s ease;
+}
+
+.activity-logs-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.activity-logs-table tbody tr:hover {
+  background: var(--color-surface-alt);
+}
+
+.activity-logs-table td {
+  color: var(--color-text);
+}
+
+.activity-logs-table .cell-id,
+.activity-logs-table .cell-date {
+  color: var(--color-text-muted);
+}
+
+.change-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.change-type-badge.task-change {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.16);
+}
+
+.change-type-badge.status-change {
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.change-type-badge.assignee-change {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.14);
+}
+
+.change-type-badge.label-change {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.activity-logs-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
