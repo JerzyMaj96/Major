@@ -1,4 +1,5 @@
 import type {
+  ActivityLog,
   CreateTask,
   Task,
   TaskStatus,
@@ -82,5 +83,13 @@ export const gptService = {
     );
     if (!response.ok) throw new Error("Failed to generate description");
     return response.text();
+  },
+};
+
+export const activityLogsService = {
+  getAllActivityLogs: async (): Promise<ActivityLog[]> => {
+    const response = await authFetch("GET", `/major/api/activity-logs`);
+    if (!response.ok) throw new Error("Failed to fetch activity logs");
+    return response.json() as Promise<ActivityLog[]>;
   },
 };
