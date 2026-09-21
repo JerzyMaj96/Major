@@ -17,14 +17,14 @@ const CHANGE_TYPE_CLASSES: Record<ChangeType, string> = {
   LABEL_CHANGE: "label-change",
 };
 
-function formatDate(value: string) {
+const formatDate = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleString(undefined, {
     dateStyle: "medium",
     timeStyle: "short",
   });
-}
+};
 
 function ActivityLogsPage() {
   const [activityLogs, setActivityLogs] = useState<ActivityLog[] | null>(null);
@@ -68,7 +68,9 @@ function ActivityLogsPage() {
                 <tr key={log.id}>
                   <td className="cell-id">{log.id}</td>
                   <td>
-                    <span className={`change-type-badge ${CHANGE_TYPE_CLASSES[log.changeType]}`}>
+                    <span
+                      className={`change-type-badge ${CHANGE_TYPE_CLASSES[log.changeType]}`}
+                    >
                       {CHANGE_TYPE_LABELS[log.changeType]}
                     </span>
                   </td>
