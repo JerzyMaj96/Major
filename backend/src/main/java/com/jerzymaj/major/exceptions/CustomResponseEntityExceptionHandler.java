@@ -23,6 +23,13 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return buildResponse(ex, request, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorDetails> handleUnauthorizedException(UnauthorizedException ex, WebRequest request) {
+
+        return buildResponse(ex, request, HttpStatus.UNAUTHORIZED);
+    }
+
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorDetails> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
 
@@ -59,8 +66,8 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     }
 
     @ExceptionHandler(WebhookEventNotFoundException.class)
-    public  final ResponseEntity<ErrorDetails> handleWebhookEventNotFoundException(WebhookEventNotFoundException ex,
-                                                                                   WebRequest request) {
+    public final ResponseEntity<ErrorDetails> handleWebhookEventNotFoundException(WebhookEventNotFoundException ex,
+                                                                                  WebRequest request) {
 
         return buildResponse(ex, request, HttpStatus.NOT_FOUND);
     }
