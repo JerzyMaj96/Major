@@ -28,7 +28,6 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     private Long id;
 
     @NotBlank
@@ -39,6 +38,7 @@ public class User implements UserDetails {
     @Email
     @NotBlank
     @Column(unique = true, nullable = false)
+    @EqualsAndHashCode.Include
     private String email;
 
     @NotBlank
