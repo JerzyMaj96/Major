@@ -52,7 +52,7 @@ public class UserService {
 
     public void deleteCurrUser() {
         User user = authFacade.getCurrentUser();
-        userRepository.delete(user);
+        userRepository.deleteById(user.getId());
     }
 
 }
