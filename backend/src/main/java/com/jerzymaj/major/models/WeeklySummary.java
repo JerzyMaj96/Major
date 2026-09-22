@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "weekly_summaries")
@@ -20,9 +21,12 @@ public class WeeklySummary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     @ToString.Include
     private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    @EqualsAndHashCode.Include
+    private UUID uuid = UUID.randomUUID();
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;

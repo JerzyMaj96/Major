@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "webhook_events")
@@ -21,9 +22,12 @@ public class WebhookEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     @ToString.Include
     private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    @EqualsAndHashCode.Include
+    private UUID uuid = UUID.randomUUID();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

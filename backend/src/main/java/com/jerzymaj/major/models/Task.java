@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tasks")
@@ -24,9 +25,12 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     @ToString.Include
     private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    @EqualsAndHashCode.Include
+    private UUID uuid = UUID.randomUUID();
 
     @NotBlank
     @Column(nullable = false)

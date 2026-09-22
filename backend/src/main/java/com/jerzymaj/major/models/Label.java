@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "labels")
 @Getter
@@ -17,9 +19,12 @@ public class Label {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     @ToString.Include
     private Long id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    @EqualsAndHashCode.Include
+    private UUID uuid = UUID.randomUUID();
 
     @NotBlank
     @Column(nullable = false, unique = true)
