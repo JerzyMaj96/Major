@@ -117,21 +117,24 @@ public class WebhookEventService {
     }
 
     private void processPullRequestByAction(String payload, GitHubPullRequestPayload pullRequestPayload, Long taskId) {
-        if (pullRequestPayload.action().equals("opened")) {
-            Task task = changeTaskStatus(taskId, TaskStatus.IN_REVIEW);
-            saveWebhookEvent(payload, EventType.PULL_REQUEST_OPENED, WebhookEventStatus.PROCESSED, task, null);
-
-        } else if (pullRequestPayload.action().equals("closed") && pullRequestPayload.pullRequest().merged()) {
-            Task task = changeTaskStatus(taskId, TaskStatus.DONE);
-            saveWebhookEvent(payload, EventType.PULL_REQUEST_MERGED, WebhookEventStatus.PROCESSED, task, null);
-
-        } else if (pullRequestPayload.action().equals("closed")) {
-            log.info("Pull request closed without merge, task status unchanged");
-            saveWebhookEvent(payload, EventType.PULL_REQUEST_CLOSED, WebhookEventStatus.PROCESSED, null, null);
-
-        } else {
-            log.info("Unhandled pull request action: {}", pullRequestPayload.action());
-            saveWebhookEvent(payload, EventType.PULL_REQUEST_OTHER, WebhookEventStatus.PROCESSED, null, null);
+        switch (pullRequestPayload.action()) {
+            case "opened" -> {
+                Task task = changeTaskStatus(taskId, TaskStatus.IN_REVIEW);
+                saveWebhookEvent(payload, EventType.PULL_REQUEST_OPENED, WebhookEventStatus.PROCESSED, task, null);
+            }
+            case "closed" -> {
+                if (pullRequestPayload.pullRequest().merged()) {
+                    Task task = changeTaskStatus(taskId, TaskStatus.DONE);
+                    saveWebhookEvent(payload, EventType.PULL_REQUEST_MERGED, WebhookEventStatus.PROCESSED, task, null);
+                } else {
+                    log.info("Pull request closed without merge, task status unchanged");
+                    saveWebhookEvent(payload, EventType.PULL_REQUEST_CLOSED, WebhookEventStatus.PROCESSED, null, null);
+                }
+            }
+            default -> {
+                log.info("Unhandled pull request action: {}", pullRequestPayload.action());
+                saveWebhookEvent(payload, EventType.PULL_REQUEST_OTHER, WebhookEventStatus.PROCESSED, null, null);
+            }
         }
     }
 }
