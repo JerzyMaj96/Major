@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-public class TaskControllerIntegration {
+public class TaskControllerIntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -111,7 +111,7 @@ public class TaskControllerIntegration {
                         .content(objectMapper.writeValueAsString(createTaskDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value(createTaskDto.title()))
-                .andExpect(jsonPath("$.description").value("Generated task description."));
+                .andExpect(jsonPath("$.description").value("Generated task description.")); // todo o co w tym chodzi
     }
 
     @Test

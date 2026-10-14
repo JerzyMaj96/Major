@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WebhookEventServiceUnit {
+public class WebhookEventServiceUnitTests {
 
     @Mock
     private WebhookEventRepository webhookEventRepository;

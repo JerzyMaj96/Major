@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WeeklySummaryServiceUnit {
+public class WeeklySummaryServiceUnitTests {
 
     @Mock
     private WeeklySummaryRepository weeklySummaryRepository;
