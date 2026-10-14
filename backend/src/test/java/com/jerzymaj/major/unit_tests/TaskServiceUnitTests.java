@@ -22,6 +22,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,14 +81,14 @@ public class TaskServiceUnit {
 
         lenient().when(activityLogService.createActivityLog(any(Task.class), any(ChangeType.class), any(String.class),
                 any(String.class), any(String.class))).thenReturn(null);
-        lenient().when(labelService.getLabelById(1L)).thenReturn(new Label(1L, "Label 1", "#FFFFFF"));
+        lenient().when(labelService.getLabelById(1L)).thenReturn(new Label(1L, UUID.randomUUID(), "Label 1", "#FFFFFF"));
     }
 
     @Test
     public void shouldCreateTaskWithGenDescription_IfSuccess() {
         when(gptService.generateTaskDescription("Test Task")).thenReturn("Generated description");
 
-        Task actualResult = taskService.createTask(new CreateTaskDto("Test Task", null, 2L, true));
+        Task actualResult = taskService.createTask(new CreateTaskDto("Test Task", null, 2L));
 
         assertThat(actualResult.getTitle()).isEqualTo("Test Task");
         assertThat(actualResult.getDescription()).isEqualTo("Generated description");
@@ -146,7 +147,7 @@ public class TaskServiceUnit {
 
     @Test
     public void shouldDeleteLabel_IfSuccess() {
-        Label label = new Label(1L, "Label 1", "#FFFFFF");
+        Label label = new Label(1L, UUID.randomUUID(), "Label 1", "#FFFFFF");
         expectedTask.getLabels().add(label);
 
         taskService.deleteLabelFromTask(1L, 1L);

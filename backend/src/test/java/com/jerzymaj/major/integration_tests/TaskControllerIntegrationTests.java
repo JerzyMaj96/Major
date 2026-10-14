@@ -80,8 +80,7 @@ public class TaskControllerIntegration {
         createTaskDto = new CreateTaskDto(
                 "Test Task",
                 "This is a test task.",
-                existingUser.getId(),
-                true
+                existingUser.getId()
         );
 
         when(gptService.generateTaskDescription(anyString())).thenReturn("Generated task description.");
