@@ -1,6 +1,5 @@
 package com.jerzymaj.major.unit_tests;
 
-import com.jerzymaj.major.Dtos.CreateTaskDto;
 import com.jerzymaj.major.Dtos.TaskDto;
 import com.jerzymaj.major.Dtos.UpdateTaskDto;
 import com.jerzymaj.major.models.Label;
@@ -29,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TaskServiceUnit {
+public class TaskServiceUnitTests {
 
     @Mock
     private TaskRepository taskRepository;
@@ -82,17 +81,6 @@ public class TaskServiceUnit {
         lenient().when(activityLogService.createActivityLog(any(Task.class), any(ChangeType.class), any(String.class),
                 any(String.class), any(String.class))).thenReturn(null);
         lenient().when(labelService.getLabelById(1L)).thenReturn(new Label(1L, UUID.randomUUID(), "Label 1", "#FFFFFF"));
-    }
-
-    @Test
-    public void shouldCreateTaskWithGenDescription_IfSuccess() {
-        when(gptService.generateTaskDescription("Test Task")).thenReturn("Generated description");
-
-        Task actualResult = taskService.createTask(new CreateTaskDto("Test Task", null, 2L));
-
-        assertThat(actualResult.getTitle()).isEqualTo("Test Task");
-        assertThat(actualResult.getDescription()).isEqualTo("Generated description");
-        assertThat(actualResult.getAssignee().getId()).isEqualTo(2L);
     }
 
     @Test

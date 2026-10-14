@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class LabelServiceUnit {
+public class LabelServiceUnitTests {
 
     @Mock
     private LabelRepository labelRepository;
