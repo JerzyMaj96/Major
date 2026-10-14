@@ -25,6 +25,7 @@ public class WebhookEvent {
     @ToString.Include
     private Long id;
 
+    @Builder.Default
     @Column(unique = true, nullable = false, updatable = false)
     @EqualsAndHashCode.Include
     private UUID uuid = UUID.randomUUID();
