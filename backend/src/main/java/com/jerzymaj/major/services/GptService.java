@@ -6,9 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,19 +44,20 @@ public class GptService {
         }
     }
 
-    public String generateWeeklySummary(List<ActivityLog> activityLogs) {
+    @Async("aiTaskExecutor")
+    public CompletableFuture<String> generateWeeklySummary(List<ActivityLog> activityLogs) {
         String formattedLogs = activityLogs.stream()
-                .map(log -> String.format("[%s] Task '%s': %s changed from '%s' to '%s' by %s",
-                        log.getCreatedAt(),
-                        log.getTask().getTitle(),
-                        log.getChangeType(),
-                        log.getOldValue(),
-                        log.getNewValue(),
-                        log.getChangedBy()))
+                .map(entry -> String.format("[%s] Task '%s': %s changed from '%s' to '%s' by %s",
+                        entry.getCreatedAt(),
+                        entry.getTask().getTitle(),
+                        entry.getChangeType(),
+                        entry.getOldValue(),
+                        entry.getNewValue(),
+                        entry.getChangedBy()))
                 .collect(Collectors.joining("\n"));
 
         try {
-            return chatClient.prompt()
+            String weeklySummary = chatClient.prompt()
                     .system("""
                             You are an assistant for a software development team.
                             Based on the activity logs, generate a medium size, technical summary (10 sentences)
@@ -68,6 +71,8 @@ public class GptService {
                     )
                     .call()
                     .content();
+
+            return CompletableFuture.completedFuture(weeklySummary);
         } catch (Exception ex) {
             log.error("Failed to generate weekly summary", ex);
             throw new AiGenerationException("Failed to generate weekly summary", ex);

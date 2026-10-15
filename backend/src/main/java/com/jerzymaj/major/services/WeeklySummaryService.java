@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 
 @Slf4j
@@ -30,13 +31,17 @@ public class WeeklySummaryService {
     @Scheduled(cron = "0 0 9 * * MON")
     public void scheduleWeeklySummaryGeneration() {
         try {
-            generateWeeklySummary();
+            generateWeeklySummary()
+                    .exceptionally(ex -> {
+                        log.error("Failed to generate weekly summary", ex);
+                        return null;
+                    });
         } catch (NoActivityLogsException ex) {
             log.info("No activity logs found for the past week, skipping summary generation");
         }
     }
 
-    public WeeklySummary generateWeeklySummary() {
+    public CompletableFuture<WeeklySummary> generateWeeklySummary() {
         List<ActivityLog> activityLogs = activityLogService.getAllActivityLogsLastWeek();
 
         if (activityLogs.isEmpty()) {
@@ -45,23 +50,25 @@ public class WeeklySummaryService {
 
         Map<String, Long> weeklyStats = getWeeklyStats(activityLogs);
 
-        String summaryText = gptService.generateWeeklySummary(activityLogs);
+        LocalDate periodStart = LocalDate.from(activityLogs.stream()
+                .map(ActivityLog::getCreatedAt)
+                .min(LocalDateTime::compareTo)
+                .orElseThrow());
 
-        WeeklySummary weeklySummary = WeeklySummary.builder()
-                .content(summaryText)
-                .tasksCompleted(weeklyStats.get("completed"))
-                .tasksCreated(weeklyStats.get("created"))
-                .periodStart(LocalDate.from(activityLogs.stream()
-                        .map(ActivityLog::getCreatedAt)
-                        .min(LocalDateTime::compareTo)
-                        .orElseThrow()))
-                .periodEnd(LocalDate.from(activityLogs.stream()
-                        .map(ActivityLog::getCreatedAt)
-                        .max(LocalDateTime::compareTo)
-                        .orElseThrow()))
-                .build();
+        LocalDate periodEnd = LocalDate.from(activityLogs.stream()
+                .map(ActivityLog::getCreatedAt)
+                .max(LocalDateTime::compareTo)
+                .orElseThrow());
 
-        return weeklySummaryRepository.save(weeklySummary);
+        return gptService.generateWeeklySummary(activityLogs)
+                .thenApply(summaryText -> weeklySummaryRepository.save(
+                        WeeklySummary.builder()
+                                .content(summaryText)
+                                .tasksCompleted(weeklyStats.get("completed"))
+                                .tasksCreated(weeklyStats.get("created"))
+                                .periodStart(periodStart)
+                                .periodEnd(periodEnd)
+                                .build()));
     }
 
     public WeeklySummary getLastWeeksSummary() {
@@ -70,7 +77,7 @@ public class WeeklySummaryService {
                 .orElseThrow(() -> new WeekSummaryNotFoundException("No weekly summary found"));
     }
 
-    public List<WeeklySummary>  getAllWeeklySummary() {
+    public List<WeeklySummary> getAllWeeklySummary() {
         return weeklySummaryRepository.findAll();
     }
 

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,15 +53,15 @@ public class WeeklySummaryServiceUnitTests {
         List<ActivityLog> activityLogs = List.of(activityLog1, activityLog2);
 
         when(activityLogService.getAllActivityLogsLastWeek()).thenReturn(activityLogs);
-        when(gptService.generateWeeklySummary(activityLogs)).thenReturn("Test summary");
+        when(gptService.generateWeeklySummary(activityLogs)).thenReturn(CompletableFuture.completedFuture("Test summary"));
         when(weeklySummaryRepository.save(any(WeeklySummary.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        WeeklySummary actualResult = weeklySummaryService.generateWeeklySummary();
+        CompletableFuture<WeeklySummary> actualResult = weeklySummaryService.generateWeeklySummary();
 
         assertThat(actualResult).isNotNull();
-        assertThat(actualResult.getContent()).isEqualTo("Test summary");
-        assertThat(actualResult.getTasksCreated()).isEqualTo(1L);
-        assertThat(actualResult.getTasksCompleted()).isEqualTo(1L);
+        assertThat(actualResult.join().getContent()).isEqualTo("Test summary");
+        assertThat(actualResult.join().getTasksCreated()).isEqualTo(1L);
+        assertThat(actualResult.join().getTasksCompleted()).isEqualTo(1L);
     }
 
     @Test
