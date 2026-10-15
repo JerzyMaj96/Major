@@ -83,8 +83,6 @@ public class TaskControllerIntegrationTests {
                 existingUser.getId()
         );
 
-        when(gptService.generateTaskDescription(anyString())).thenReturn("Generated task description.");
-
         testTask = Task.builder()
                 .title("Test Task")
                 .description("This is a test task.")
@@ -111,7 +109,7 @@ public class TaskControllerIntegrationTests {
                         .content(objectMapper.writeValueAsString(createTaskDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value(createTaskDto.title()))
-                .andExpect(jsonPath("$.description").value("Generated task description.")); // todo o co w tym chodzi
+                .andExpect(jsonPath("$.description").value("This is a test task."));
     }
 
     @Test
