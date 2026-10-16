@@ -1,5 +1,6 @@
 package com.jerzymaj.major.unit_tests;
 
+import com.jerzymaj.major.exceptions.AiGenerationException;
 import com.jerzymaj.major.exceptions.NoActivityLogsException;
 import com.jerzymaj.major.models.ActivityLog;
 import com.jerzymaj.major.models.WeeklySummary;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -62,6 +64,31 @@ public class WeeklySummaryServiceUnitTests {
         assertThat(actualResult.join().getContent()).isEqualTo("Test summary");
         assertThat(actualResult.join().getTasksCreated()).isEqualTo(1L);
         assertThat(actualResult.join().getTasksCompleted()).isEqualTo(1L);
+    }
+
+    @Test
+    public void failedFutureShouldBeReturned_WhenGptServiceFails() {
+        ActivityLog activityLog = ActivityLog.builder()
+                .changeType(ChangeType.STATUS_CHANGE)
+                .newValue("DONE")
+                .createdAt(LocalDateTime.now().minusDays(3))
+                .build();
+
+        List<ActivityLog> activityLogs = List.of(activityLog);
+        when(activityLogService.getAllActivityLogsLastWeek()).thenReturn(activityLogs);
+        when(gptService.generateWeeklySummary(activityLogs)).thenReturn(CompletableFuture
+                .failedFuture(new AiGenerationException("Failed to generate weekly summary",
+                        new RuntimeException("OpenAI unavailable"))));
+
+        CompletableFuture<WeeklySummary> actualResult = weeklySummaryService.generateWeeklySummary();
+
+        assertThat(actualResult.isCompletedExceptionally()).isTrue();
+
+        CompletionException exception = assertThrows(CompletionException.class, actualResult::join);
+        assertThat(exception.getCause()).isInstanceOf(AiGenerationException.class);
+        assertThat(exception.getCause().getMessage()).isEqualTo("Failed to generate weekly summary");
+
+        verify(weeklySummaryRepository, never()).save(any(WeeklySummary.class));
     }
 
     @Test
