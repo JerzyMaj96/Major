@@ -59,6 +59,12 @@ function Header() {
           >
             Activity Logs
           </h2>
+          <h2
+            className={location.pathname === "/weekly-summary" ? "active" : ""}
+            onClick={() => goToPage("/weekly-summary")}
+          >
+            Weekly Summary
+          </h2>
         </div>
       )}
 

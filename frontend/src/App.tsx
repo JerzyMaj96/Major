@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashboardPage from "./pages/DashboardPage/DashboardPage";
 import ActivityLogsPage from "./pages/ActivityLogsPage/ActivityLogsPage";
+import WeeklySummaryPage from "./pages/WeeklySummaryPage/WeeklySummaryPage";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -57,6 +58,14 @@ function AppLayout() {
               element={
                 <ProtectedRoute>
                   <ActivityLogsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/weekly-summary"
+              element={
+                <ProtectedRoute>
+                  <WeeklySummaryPage />
                 </ProtectedRoute>
               }
             />
