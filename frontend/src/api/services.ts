@@ -6,6 +6,7 @@ import type {
   User,
   UserLogin,
   UserRegister,
+  WeeklySummary,
 } from "../types/types";
 import { authFetch, baseUrl } from "./api_helper";
 
@@ -91,5 +92,17 @@ export const activityLogsService = {
     const response = await authFetch("GET", `/major/api/activity-logs`);
     if (!response.ok) throw new Error("Failed to fetch activity logs");
     return response.json() as Promise<ActivityLog[]>;
+  },
+};
+
+export const weeklySummaryService = {
+  getWeeklySummary: async (): Promise<WeeklySummary | null> => {
+    const response = await authFetch(
+      "GET",
+      "/major/api/weekly-summary/last-week",
+    );
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error("Failed to fetch last week's summary");
+    return response.json() as Promise<WeeklySummary>;
   },
 };
