@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./ActivityLogsPage.css";
 import { activityLogsService } from "../../api/services";
 import type { ActivityLog, ChangeType } from "../../types/types";
+import { formatDateTime } from "../../utils";
 
 const CHANGE_TYPE_LABELS: Record<ChangeType, string> = {
   TASK_CHANGE: "Task",
@@ -15,15 +16,6 @@ const CHANGE_TYPE_CLASSES: Record<ChangeType, string> = {
   STATUS_CHANGE: "status-change",
   ASSIGNEE_CHANGE: "assignee-change",
   LABEL_CHANGE: "label-change",
-};
-
-const formatDate = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
 };
 
 function ActivityLogsPage() {
@@ -76,7 +68,7 @@ function ActivityLogsPage() {
                   </td>
                   <td>{log.oldValue}</td>
                   <td>{log.newValue}</td>
-                  <td className="cell-date">{formatDate(log.createdAt)}</td>
+                  <td className="cell-date">{formatDateTime(log.createdAt)}</td>
                   <td>{log.changedBy}</td>
                 </tr>
               );

@@ -2,21 +2,7 @@ import { useEffect, useState } from "react";
 import "./WeeklySummaryPage.css";
 import { weeklySummaryService } from "../../api/services";
 import type { WeeklySummary } from "../../types/types";
-
-const formatDate = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString(undefined, { dateStyle: "medium" });
-};
-
-const formatDateTime = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-};
+import { formatDate, formatDateTime } from "../../utils";
 
 function WeeklySummaryPage() {
   const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(
