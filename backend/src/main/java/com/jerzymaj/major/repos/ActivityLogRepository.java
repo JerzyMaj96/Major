@@ -13,9 +13,9 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
     @Query(
             value = """
                             SELECT *
-                            FROM ActivityLog 
-                            WHERE createdAt >= NOW() - INTERVAL '7 days'
-                            ORDER BY createdAt DESC
+                            FROM activity_logs
+                            WHERE created_at >= NOW() - INTERVAL '7 days'
+                            ORDER BY created_at DESC
                     """
     , nativeQuery = true)
     List<ActivityLog> findAllLastWeek();
