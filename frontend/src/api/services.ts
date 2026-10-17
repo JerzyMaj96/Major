@@ -110,4 +110,12 @@ export const weeklySummaryService = {
     if (!response.ok) throw new Error("Failed to fetch weekly summaries");
     return response.json() as Promise<WeeklySummary[]>;
   },
+  generateWeeklySummary: async (): Promise<WeeklySummary> => {
+    const response = await authFetch(
+      "POST",
+      "/major/api/weekly-summary/generate",
+    );
+    if (!response.ok) throw new Error("Failed to generate weekly summary");
+    return response.json() as Promise<WeeklySummary>;
+  },
 };
