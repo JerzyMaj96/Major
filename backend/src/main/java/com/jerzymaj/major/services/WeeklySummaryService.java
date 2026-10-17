@@ -1,7 +1,7 @@
 package com.jerzymaj.major.services;
 
 import com.jerzymaj.major.exceptions.NoActivityLogsException;
-import com.jerzymaj.major.exceptions.WeekSummaryNotFoundException;
+import com.jerzymaj.major.exceptions.WeeklySummaryNotFoundException;
 import com.jerzymaj.major.models.ActivityLog;
 import com.jerzymaj.major.models.WeeklySummary;
 import com.jerzymaj.major.models.enums.ChangeType;
@@ -74,7 +74,7 @@ public class WeeklySummaryService {
     public WeeklySummary getLastWeeksSummary() {
 
         return weeklySummaryRepository.findFirstByOrderByPeriodEndDesc()
-                .orElseThrow(() -> new WeekSummaryNotFoundException("No weekly summary found"));
+                .orElseThrow(() -> new WeeklySummaryNotFoundException("No weekly summary found"));
     }
 
     public List<WeeklySummary> getAllWeeklySummary() {
