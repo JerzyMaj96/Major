@@ -105,9 +105,8 @@ export const weeklySummaryService = {
     if (!response.ok) throw new Error("Failed to fetch last week's summary");
     return response.json() as Promise<WeeklySummary>;
   },
-  getAllWeeklySummaries: async (): Promise<WeeklySummary[] | null> => {
+  getAllWeeklySummaries: async (): Promise<WeeklySummary[]> => {
     const response = await authFetch("GET", "/major/api/weekly-summary/all");
-    if (response.status === 404) return null;
     if (!response.ok) throw new Error("Failed to fetch weekly summaries");
     return response.json() as Promise<WeeklySummary[]>;
   },

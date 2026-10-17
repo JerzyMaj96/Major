@@ -8,6 +8,9 @@ function WeeklySummaryPage() {
   const [weeklySummary, setWeeklySummary] = useState<WeeklySummary | null>(
     null,
   );
+  const [allSummaries, setAllSummaries] = useState<WeeklySummary[] | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,6 +30,19 @@ function WeeklySummaryPage() {
     };
     getWeeklySummary();
   }, []);
+
+  const fetchAllSummaries = async () => {
+    try {
+      const data = await weeklySummaryService.getAllWeeklySummaries();
+      setAllSummaries(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert("Error: " + error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
+    }
+  };
 
   return (
     <div className="weekly-summary-page">
@@ -49,9 +65,7 @@ function WeeklySummaryPage() {
             </div>
             <div className="weekly-summary-stat">
               <span className="stat-label">Tasks Completed</span>
-              <span className="stat-value">
-                {weeklySummary.tasksCompleted}
-              </span>
+              <span className="stat-value">{weeklySummary.tasksCompleted}</span>
             </div>
           </div>
 
@@ -73,6 +87,34 @@ function WeeklySummaryPage() {
           </p>
         </div>
       )}
+
+      <section className="weekly-summary-history">
+        <button
+          className="weekly-summary-history-button"
+          onClick={fetchAllSummaries}
+        >
+          {allSummaries ? "Refresh all summaries" : "Show all summaries"}
+        </button>
+
+        {allSummaries?.length === 0 && (
+          <p className="weekly-summary-empty">No weekly summaries available.</p>
+        )}
+
+        {allSummaries?.map((summary) => (
+          <div key={summary.id} className="weekly-summary-card">
+            <div className="weekly-summary-card-header">
+              <h2>
+                {formatDate(summary.periodStart)} –{" "}
+                {formatDate(summary.periodEnd)}
+              </h2>
+              <span className="weekly-summary-meta">
+                #{summary.id} · Generated {formatDateTime(summary.generatedAt)}
+              </span>
+            </div>
+            <p className="weekly-summary-content">{summary.content}</p>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }
