@@ -11,6 +11,7 @@ function WeeklySummaryPage() {
   const [allSummaries, setAllSummaries] = useState<WeeklySummary[] | null>(
     null,
   );
+  const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,6 +36,21 @@ function WeeklySummaryPage() {
     try {
       const data = await weeklySummaryService.getAllWeeklySummaries();
       setAllSummaries(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        alert("Error: " + error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
+    }
+  };
+
+  const generateSummary = async () => {
+    setGenerating(true);
+    try {
+      const data = await weeklySummaryService.generateWeeklySummary();
+      setWeeklySummary(data);
+      alert("Weekly summary generated successfully!");
     } catch (error) {
       if (error instanceof Error) {
         alert("Error: " + error.message);
@@ -94,6 +110,10 @@ function WeeklySummaryPage() {
           onClick={fetchAllSummaries}
         >
           {allSummaries ? "Refresh all summaries" : "Show all summaries"}
+        </button>
+
+        <button onClick={generateSummary} disabled={generating}>
+          {generating ? "Generating..." : "Generate Weekly Summary"}
         </button>
 
         {allSummaries?.length === 0 && (
