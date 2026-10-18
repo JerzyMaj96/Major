@@ -1,0 +1,67 @@
+.dlq-page {
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dlq-page > h1 {
+  font-size: 1.9rem;
+}
+
+.dlq-page > p {
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.dlq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dlq-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.dlq-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 20px;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dlq-card-header h2 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.dlq-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+}
+
+.dlq-error {
+  padding: 16px 20px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.dlq-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 20px 16px;
+}
