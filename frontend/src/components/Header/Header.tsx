@@ -65,6 +65,12 @@ function Header() {
           >
             Weekly Summary
           </h2>
+          <h2
+            className={location.pathname === "/dlq" ? "active" : ""}
+            onClick={() => goToPage("/dlq")}
+          >
+            Failed Webhooks
+          </h2>
         </div>
       )}
 
