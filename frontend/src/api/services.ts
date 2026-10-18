@@ -7,6 +7,7 @@ import type {
   UserLogin,
   UserRegister,
   WebhookEvent,
+  WebhookEventStatus,
   WeeklySummary,
 } from "../types/types";
 import { authFetch, baseUrl } from "./api_helper";
@@ -122,7 +123,9 @@ export const weeklySummaryService = {
 };
 
 export const webhookEventService = {
-  getWebhookEventsByStatus: async (status: string): Promise<WebhookEvent[]> => {
+  getWebhookEventsByStatus: async (
+    status: WebhookEventStatus,
+  ): Promise<WebhookEvent[]> => {
     const response = await authFetch(
       "GET",
       `/major/api/webhook-events?status=${status}`,
