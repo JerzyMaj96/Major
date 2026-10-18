@@ -240,8 +240,8 @@ cd backend
 ## Roadmap
 
 - [ ] Frontend: webhook event (dead letter queue) view with a retry button
-- [ ] Frontend: weekly summary view
-- [ ] `@Async` + `CompletableFuture` for weekly summary generation
+- [x] Frontend: weekly summary view
+- [x] `@Async` + `CompletableFuture` for weekly summary generation
 - [ ] Test coverage report (JaCoCo) in CI
 - [ ] Full-stack `docker-compose` (backend + frontend + database)
 - [ ] Future work (outside the thesis scope): caching, OAuth2, two-factor authentication, database migrations (Flyway)
