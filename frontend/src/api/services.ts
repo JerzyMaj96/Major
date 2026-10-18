@@ -6,6 +6,7 @@ import type {
   User,
   UserLogin,
   UserRegister,
+  WebhookEvent,
   WeeklySummary,
 } from "../types/types";
 import { authFetch, baseUrl } from "./api_helper";
@@ -117,5 +118,23 @@ export const weeklySummaryService = {
     );
     if (!response.ok) throw new Error("Failed to generate weekly summary");
     return response.json() as Promise<WeeklySummary>;
+  },
+};
+
+export const webhookEventService = {
+  getWebhookEventsByStatus: async (status: string): Promise<WebhookEvent[]> => {
+    const response = await authFetch(
+      "GET",
+      `/major/api/webhook-events?status=${status}`,
+    );
+    if (!response.ok) throw new Error("Failed to fetch webhook events");
+    return response.json() as Promise<WebhookEvent[]>;
+  },
+  retryHandleGitHubWebhook: async (eventId: number): Promise<void> => {
+    const response = await authFetch(
+      "POST",
+      `/major/api/webhook-events/${eventId}/retry`,
+    );
+    if (!response.ok) throw new Error("Failed to retry webhook handling");
   },
 };
