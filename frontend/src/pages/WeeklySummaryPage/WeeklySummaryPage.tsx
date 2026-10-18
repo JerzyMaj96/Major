@@ -57,6 +57,8 @@ function WeeklySummaryPage() {
       } else {
         alert("An unknown error occurred");
       }
+    } finally {
+      setGenerating(false);
     }
   };
 
