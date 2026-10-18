@@ -1,6 +1,7 @@
 package com.jerzymaj.major.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @ControllerAdvice
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -122,7 +124,11 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex, WebRequest request) {
 
-        return buildResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
+        log.error("Unhandled exception for request {}", request.getDescription(false), ex);
+
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "Internal server error",
+                request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ErrorDetails> buildResponse(Exception ex, WebRequest request, HttpStatus status) {

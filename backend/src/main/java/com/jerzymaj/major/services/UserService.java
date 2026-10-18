@@ -41,7 +41,7 @@ public class UserService {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
             throw new ExistingUserException("Name '" + registerUserDto.name()
-                    + "' or email '" + registerUserDto.email() + "' is already taken");
+                    + "' or email '" + registerUserDto.email() + "' is already taken", ex);
         }
     }
 
