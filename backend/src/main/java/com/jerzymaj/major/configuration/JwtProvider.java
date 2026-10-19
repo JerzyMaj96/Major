@@ -15,6 +15,11 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+/**
+ * Creates and validates JSON Web Tokens used for stateless authentication.
+ * The signing key is read from {@code app.jwt.secret} (Base64) and the token lifetime
+ * from {@code app.jwt.expiration-ms}.
+ */
 @Slf4j
 @Component
 public class JwtProvider {
@@ -33,6 +38,9 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Creates a signed token whose subject is the authenticated user's username.
+     */
     public String generateToken(Authentication authentication) {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
 
@@ -56,6 +64,13 @@ public class JwtProvider {
                 .getSubject();
     }
 
+    /**
+     * Checks the signature and expiration of a token.
+     *
+     * @return {@code true} if the token is valid; {@code false} for a token with a bad
+     *         signature or that is malformed, expired, unsupported or empty (the reason is
+     *         logged instead of thrown)
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser().verifyWith((SecretKey) key).build().parseSignedClaims(token);

@@ -19,6 +19,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Business logic for tasks. Creating a task and changing its title, description, assignee,
+ * status or labels is recorded in the activity log (deleting a task is not). Status changes
+ * are additionally broadcast over WebSocket to {@code /topic/task-updates}.
+ */
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -31,6 +36,11 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
+    /**
+     * Creates a task in {@code BACKLOG} status, created by the current user.
+     *
+     * @throws NoDescriptionException if the description is missing or blank
+     */
     public Task createTask(CreateTaskDto createTaskDto) {
         User creator = authFacade.getCurrentUser();
 
@@ -138,6 +148,15 @@ public class TaskService {
         }
     }
 
+    /**
+     * Changes a task's status, broadcasts the updated task over WebSocket and writes an
+     * activity log entry attributed to {@code changedBy}.
+     *
+     * <p>This variant lets callers without a logged-in user, such as the GitHub webhook handler,
+     * name the actor.
+     *
+     * @throws TaskNotFoundException if the task does not exist
+     */
     public Task updateTaskStatus(Long taskId, TaskStatus taskStatus, String changedBy) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));
@@ -154,6 +173,9 @@ public class TaskService {
         return savedTask;
     }
 
+    /**
+     * Same as {@link #updateTaskStatus(Long, TaskStatus, String)}, attributed to the current user.
+     */
     public Task updateTaskStatus(Long taskId, TaskStatus taskStatus) {
         return updateTaskStatus(taskId, taskStatus, authFacade.getCurrentUser().getName());
     }

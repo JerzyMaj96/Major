@@ -17,6 +17,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Runs once per request: reads the {@code Authorization: Bearer <token>} header and, when the
+ * token is valid, puts the authenticated user into the {@code SecurityContext}.
+ * Requests without a valid token continue unauthenticated and are rejected later by the
+ * security configuration.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor

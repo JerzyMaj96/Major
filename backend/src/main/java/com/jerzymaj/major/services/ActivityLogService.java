@@ -29,6 +29,11 @@ public class ActivityLogService {
         return activityLogRepository.findAllByTaskId(taskId);
     }
 
+    /**
+     * Saves an audit entry describing one change made to a task.
+     *
+     * @param changedBy name of the user, or of the system component, that made the change
+     */
     public ActivityLog createActivityLog(Task task, ChangeType changeType, String oldValue, String newValue, String changedBy) {
 
         return activityLogRepository.save(ActivityLog.builder()

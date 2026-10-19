@@ -1,5 +1,6 @@
 package com.jerzymaj.major.services;
 
+import com.jerzymaj.major.exceptions.AiGenerationException;
 import com.jerzymaj.major.exceptions.NoActivityLogsException;
 import com.jerzymaj.major.exceptions.WeeklySummaryNotFoundException;
 import com.jerzymaj.major.models.ActivityLog;
@@ -19,6 +20,12 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 
+/**
+ * Creates and reads AI-generated weekly summaries of the team's activity.
+ *
+ * <p>Summaries are built from {@link ActivityLog} entries of the last 7 days. They are
+ * generated automatically every Monday and on demand through the REST API.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,6 +35,11 @@ public class WeeklySummaryService {
     private final ActivityLogService activityLogService;
     private final GptService gptService;
 
+    /**
+     * Generates a summary every Monday at 09:00. It only fires while the application is running
+     * (missed runs are not caught up), which is why an on-demand endpoint exists as well.
+     * A week without activity is skipped and logged at info level.
+     */
     @Scheduled(cron = "0 0 9 * * MON")
     public void scheduleWeeklySummaryGeneration() {
         try {
@@ -41,6 +53,18 @@ public class WeeklySummaryService {
         }
     }
 
+    /**
+     * Generates and saves a summary of the last 7 days of activity.
+     *
+     * <p>The period start and end are taken from the earliest and latest log entry, task counts
+     * (created and completed) are computed locally, and the text is written by the AI model
+     * asynchronously (see {@link GptService#generateWeeklySummary(List)}).
+     *
+     * @return a future completing with the saved summary; if the AI call fails, it completes
+     *         exceptionally (the cause is {@link AiGenerationException}, usually wrapped in a
+     *         {@code CompletionException})
+     * @throws NoActivityLogsException synchronously, when there is no activity in the last 7 days
+     */
     public CompletableFuture<WeeklySummary> generateWeeklySummary() {
         List<ActivityLog> activityLogs = activityLogService.getAllActivityLogsLastWeek();
 
@@ -71,6 +95,11 @@ public class WeeklySummaryService {
                                 .build()));
     }
 
+    /**
+     * Returns the most recent summary (the one with the latest period end).
+     *
+     * @throws WeeklySummaryNotFoundException if no summary has been generated yet
+     */
     public WeeklySummary getLastWeeksSummary() {
 
         return weeklySummaryRepository.findFirstByOrderByPeriodEndDesc()

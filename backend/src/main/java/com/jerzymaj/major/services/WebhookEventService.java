@@ -20,6 +20,15 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Processes GitHub webhook events and keeps a record of every one of them.
+ *
+ * <p>A task is linked to a branch by a {@code task-<id>} fragment in the branch name
+ * (for example {@code feature/task-42-login}). A push moves the task to {@code IN_PROGRESS},
+ * an opened pull request to {@code IN_REVIEW} and a merged one to {@code DONE}.
+ * Events that cannot be processed are stored with status {@code FAILED}
+ * (a simple dead letter queue) so they can be retried later.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +37,17 @@ public class WebhookEventService {
     private final WebhookEventRepository webhookEventRepository;
     private final TaskService taskService;
 
+    /**
+     * Handles a single webhook delivery and stores a {@link WebhookEvent} describing the result.
+     *
+     * <p>Processing errors do not propagate to the caller: an exception (invalid JSON, missing
+     * task id, unknown task) is caught, logged and saved as a {@code FAILED} event, so a
+     * correctly signed request normally gets a successful response. Event types other than
+     * {@code push} and {@code pull_request} are ignored.
+     *
+     * @param eventType value of the {@code X-GitHub-Event} header
+     * @param payload   raw JSON body of the request
+     */
     public void processEvent(String eventType, String payload) {
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -64,6 +84,16 @@ public class WebhookEventService {
         }
     }
 
+    /**
+     * Re-runs processing of a previously failed event using its stored payload.
+     *
+     * <p>The retry goes through {@link #processEvent(String, String)}, which saves a
+     * <em>new</em> event with the result. The original {@code FAILED} record is not modified.
+     *
+     * @param webhookEventId id of the failed event
+     * @throws WebhookEventNotFoundException if no event with this id exists
+     * @throws IllegalStateException         if the event is not in status {@code FAILED}
+     */
     public void retryProcessWebhookEvent(Long webhookEventId) {
         WebhookEvent webhookEvent = webhookEventRepository.findById(webhookEventId)
                 .orElseThrow(() -> new WebhookEventNotFoundException("Webhook event not found with id: " + webhookEventId));
@@ -89,6 +119,11 @@ public class WebhookEventService {
         };
     }
 
+    /**
+     * Extracts the task id from a branch ref, e.g. {@code refs/heads/feature/task-42-login} gives 42.
+     *
+     * @return the id, or an empty {@code Optional} if the ref contains no {@code task-<digits>} part
+     */
     private Optional<Long> extractTaskIdFromRef(String ref) {
         Pattern pattern = Pattern.compile("task-(\\d+)");
         Matcher matcher = pattern.matcher(ref);

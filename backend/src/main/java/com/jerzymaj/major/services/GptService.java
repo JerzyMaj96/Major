@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+ * Thin wrapper around Spring AI's {@code ChatClient} (OpenAI, model gpt-4o-mini) used for
+ * generating task descriptions and weekly summaries. Failures are wrapped in
+ * {@link AiGenerationException} with the original exception as the cause.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,6 +25,12 @@ public class GptService {
 
     private final ChatClient chatClient;
 
+    /**
+     * Generates a short (2-3 sentences) technical description for a task based on its title.
+     * The call is synchronous.
+     *
+     * @throws AiGenerationException if the AI call fails
+     */
     public String generateTaskDescription(String taskTitle) {
 
         try {
@@ -44,6 +55,16 @@ public class GptService {
         }
     }
 
+    /**
+     * Generates a text summary (about 10 sentences) from the given activity logs.
+     *
+     * <p>Runs on the {@code aiTaskExecutor} thread pool, so the caller's thread is not blocked
+     * by the slow API call.
+     *
+     * @param activityLogs log entries to summarize
+     * @return a future with the summary text; if the AI call fails, the future completes
+     *         exceptionally with {@link AiGenerationException} as the cause
+     */
     @Async("aiTaskExecutor")
     public CompletableFuture<String> generateWeeklySummary(List<ActivityLog> activityLogs) {
         String formattedLogs = activityLogs.stream()
