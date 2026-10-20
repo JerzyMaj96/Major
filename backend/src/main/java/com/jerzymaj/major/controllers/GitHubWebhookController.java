@@ -28,7 +28,7 @@ public class GitHubWebhookController {
      * Verifies the signature and hands the event over for processing.
      *
      * @return 401 if the signature is invalid, otherwise 200 (Spring itself answers 400 when a
-     *         required header is missing)
+     * required header is missing)
      */
     @PostMapping("/webhook/github")
     public ResponseEntity<String> handleGitHubWebhook(@RequestHeader("X-Hub-Signature-256") String signature,
@@ -39,8 +39,8 @@ public class GitHubWebhookController {
             return ResponseEntity.status(401).body("Invalid signature");
         }
 
-        webhookEventService.processEvent(eventType, payload);
+        boolean success = webhookEventService.processEvent(eventType, payload);
 
-        return ResponseEntity.ok("Webhook received");
+        return ResponseEntity.ok("Webhook processed: " + success);
     }
 }
