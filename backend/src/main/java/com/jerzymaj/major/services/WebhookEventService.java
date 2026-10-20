@@ -127,7 +127,7 @@ public class WebhookEventService {
     }
 
     public List<WebhookEvent> getWebhookEventByStatus(WebhookEventStatus status) {
-        return webhookEventRepository.findByStatus(status);
+        return webhookEventRepository.findByStatusDesc(status);
     }
 
     private String mapEventTypeToRawString(EventType eventType) {
