@@ -47,8 +47,10 @@ public class WebhookEventService {
      *
      * @param eventType value of the {@code X-GitHub-Event} header
      * @param payload   raw JSON body of the request
+     * @return {@code true} if the event was processed or its type is ignored,
+     *         {@code false} if processing failed and a {@code FAILED} event was saved
      */
-    public void processEvent(String eventType, String payload) {
+    public boolean processEvent(String eventType, String payload) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (eventType.equals("push")) {
@@ -62,9 +64,13 @@ public class WebhookEventService {
 
                 saveWebhookEvent(payload, EventType.PUSH, WebhookEventStatus.PROCESSED, task, null);
 
+                return true;
+
             } catch (Exception ex) {
                 saveWebhookEvent(payload, EventType.PUSH, WebhookEventStatus.FAILED, null, ex.getMessage());
                 log.error("Failed to process push webhook event", ex);
+
+                return false;
             }
         }
 
@@ -77,18 +83,25 @@ public class WebhookEventService {
 
                 processPullRequestByAction(payload, pullRequestPayload, taskId);
 
+                return true;
+
             } catch (Exception ex) {
                 saveWebhookEvent(payload, EventType.PULL_REQUEST_UNKNOWN, WebhookEventStatus.FAILED, null, ex.getMessage());
                 log.error("Failed to process pull_request webhook event", ex);
+
+                return false;
             }
         }
+        return true;
     }
 
     /**
      * Re-runs processing of a previously failed event using its stored payload.
      *
-     * <p>The retry goes through {@link #processEvent(String, String)}, which saves a
-     * <em>new</em> event with the result. The original {@code FAILED} record is not modified.
+     * <p>The retry goes through {@link #processEvent(String, String)}, which always saves a
+     * <em>new</em> event with the result. If the retry succeeds, the original event is also set to
+     * {@code PROCESSED} and its error message is cleared, so it leaves the failed list. If the retry
+     * fails, the original stays {@code FAILED} and one more {@code FAILED} event is saved.
      *
      * @param webhookEventId id of the failed event
      * @throws WebhookEventNotFoundException if no event with this id exists
@@ -104,7 +117,13 @@ public class WebhookEventService {
 
         String rawEventType = mapEventTypeToRawString(webhookEvent.getEventType());
 
-        processEvent(rawEventType, webhookEvent.getPayload());
+        boolean success = processEvent(rawEventType, webhookEvent.getPayload());
+
+        if (success) {
+            webhookEvent.setStatus(WebhookEventStatus.PROCESSED);
+            webhookEvent.setErrorMessage(null);
+            webhookEventRepository.save(webhookEvent);
+        }
     }
 
     public List<WebhookEvent> getWebhookEventByStatus(WebhookEventStatus status) {
