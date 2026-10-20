@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import "./WeeklySummaryPage.css";
 import { weeklySummaryService } from "../../api/services";
 import type { WeeklySummary } from "../../types/types";
@@ -107,16 +108,27 @@ function WeeklySummaryPage() {
       )}
 
       <section className="weekly-summary-history">
-        <button
-          className="weekly-summary-history-button"
-          onClick={fetchAllSummaries}
-        >
-          {allSummaries ? "Refresh all summaries" : "Show all summaries"}
-        </button>
+        <div className="weekly-summary-actions">
+          <button
+            className="weekly-summary-generate-button"
+            onClick={generateSummary}
+            disabled={generating}
+          >
+            {generating ? (
+              <span className="button-spinner" aria-hidden="true" />
+            ) : (
+              <AutoAwesomeIcon fontSize="small" />
+            )}
+            {generating ? "Generating..." : "Generate Weekly Summary"}
+          </button>
 
-        <button onClick={generateSummary} disabled={generating}>
-          {generating ? "Generating..." : "Generate Weekly Summary"}
-        </button>
+          <button
+            className="weekly-summary-history-button"
+            onClick={fetchAllSummaries}
+          >
+            {allSummaries ? "Refresh all summaries" : "Show all summaries"}
+          </button>
+        </div>
 
         {allSummaries?.length === 0 && (
           <p className="weekly-summary-empty">No weekly summaries available.</p>

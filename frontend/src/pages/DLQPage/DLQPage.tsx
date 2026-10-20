@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReplayIcon from "@mui/icons-material/Replay";
 import "./DLQPage.css";
 import { webhookEventService } from "../../api/services";
 import type { WebhookEvent } from "../../types/types";
@@ -61,9 +62,15 @@ function DLQPage() {
               </p>
               <div className="dlq-actions">
                 <button
+                  className="dlq-retry-button"
                   onClick={() => handleRetry(event.id)}
                   disabled={retryingId === event.id}
                 >
+                  {retryingId === event.id ? (
+                    <span className="dlq-spinner" aria-hidden="true" />
+                  ) : (
+                    <ReplayIcon fontSize="small" />
+                  )}
                   {retryingId === event.id ? "Retrying..." : "Retry"}
                 </button>
               </div>

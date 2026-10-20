@@ -65,3 +65,51 @@
   justify-content: flex-end;
   padding: 0 20px 16px;
 }
+
+.dlq-retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-hover);
+  background: var(--color-primary-soft);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: var(--radius-sm);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.dlq-retry-button:hover:not(:disabled) {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.dlq-retry-button:focus-visible {
+  outline: 2px solid var(--color-primary-hover);
+  outline-offset: 2px;
+}
+
+.dlq-retry-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.dlq-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(129, 140, 248, 0.35);
+  border-top-color: var(--color-primary-hover);
+  border-radius: 50%;
+  animation: dlq-spin 0.7s linear infinite;
+}
+
+@keyframes dlq-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
