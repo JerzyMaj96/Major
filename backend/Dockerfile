@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-21 as build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ WORKDIR /app
 
 RUN addgroup -S spring && adduser -S spring -G spring
 
-COPY --from=build --chown=spring:spring /app/target/*jar app.jar
+COPY --from=build --chown=spring:spring /app/target/*.jar app.jar
 
 USER spring:spring
 
