@@ -215,9 +215,9 @@ public class WebhookEventServiceUnitTests {
                 .errorMessage("test error message")
                 .build();
 
-        when(webhookEventRepository.findByStatus(WebhookEventStatus.FAILED)).thenReturn(List.of(webhookEvent));
+        when(webhookEventRepository.findByStatusDesc(WebhookEventStatus.FAILED)).thenReturn(List.of(webhookEvent));
 
-        List<WebhookEvent> actualResult = webhookEventRepository.findByStatus(WebhookEventStatus.FAILED);
+        List<WebhookEvent> actualResult = webhookEventRepository.findByStatusDesc(WebhookEventStatus.FAILED);
 
         assertThat(actualResult).isEqualTo(List.of(webhookEvent));
     }

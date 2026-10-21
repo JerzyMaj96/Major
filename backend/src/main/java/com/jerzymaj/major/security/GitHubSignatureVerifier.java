@@ -26,7 +26,7 @@ public class GitHubSignatureVerifier {
      * @param payload         raw request body (must not be re-serialized before verification)
      * @param signatureHeader header value, expected in the form {@code sha256=<hex>}
      * @param secret          shared webhook secret configured in GitHub
-     * @return {@code true} only if the header is present, well formed and matches
+     * @return {@code true} only if the header is present, well-formed and matches
      */
     public boolean isValidSignature(String payload, String signatureHeader, String secret) {
         if (signatureHeader == null || !signatureHeader.startsWith("sha256=")) {
