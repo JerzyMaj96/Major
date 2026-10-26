@@ -1,7 +1,10 @@
 import type {
   ActivityLog,
+  CreateLabel,
   CreateTask,
+  Label,
   Task,
+  TaskLabel,
   TaskStatus,
   User,
   UserLogin,
@@ -75,6 +78,21 @@ export const taskService = {
     const response = await authFetch("DELETE", `/major/api/tasks/${taskId}`);
     if (!response.ok) throw new Error("Failed to delete task");
   },
+  addLabelToTask: async ({ taskId, labelId }: TaskLabel): Promise<Task> => {
+    const response = await authFetch(
+      "PATCH",
+      `/major/api/tasks/${taskId}/labels/${labelId}`,
+    );
+    if (!response.ok) throw new Error("Failed to add label to task");
+    return response.json() as Promise<Task>;
+  },
+  removeLabelFromTask: async ({ taskId, labelId }: TaskLabel): Promise<void> => {
+    const response = await authFetch(
+      "DELETE",
+      `/major/api/tasks/${taskId}/labels/${labelId}`,
+    );
+    if (!response.ok) throw new Error("Failed to remove label from task");
+  },
 };
 
 export const gptService = {
@@ -139,5 +157,26 @@ export const webhookEventService = {
       `/major/api/webhook-events/${eventId}/retry`,
     );
     if (!response.ok) throw new Error("Failed to retry webhook handling");
+  },
+};
+
+export const labelService = {
+  createLabel: async (labelData: CreateLabel): Promise<Label> => {
+    const response = await authFetch(
+      "POST",
+      `/major/api/labels`,
+      JSON.stringify(labelData),
+    );
+    if (!response.ok) throw new Error("Failed to create label");
+    return response.json() as Promise<Label>;
+  },
+  getAllLabels: async (): Promise<Label[]> => {
+    const response = await authFetch("GET", `/major/api/labels`);
+    if (!response.ok) throw new Error("Failed ro fetch labels");
+    return response.json() as Promise<Label[]>;
+  },
+  deleteLabel: async (labelId: number): Promise<void> => {
+    const response = await authFetch("DELETE", `/major/api/labels/${labelId}`);
+    if (!response.ok) throw new Error("Failed to delete label");
   },
 };

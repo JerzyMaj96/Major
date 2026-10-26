@@ -42,10 +42,20 @@ export interface Task {
   updatedAt: string;
 }
 
+export interface CreateLabel {
+  name: string;
+  color: string;
+}
+
 export interface Label {
   id: number;
   name: string;
   color: string;
+}
+
+export interface TaskLabel {
+  taskId: number;
+  labelId: number;
 }
 
 export type ChangeType =
