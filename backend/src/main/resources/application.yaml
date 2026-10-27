@@ -24,6 +24,9 @@ spring:
   config:
     activate:
       on-profile: dev
+  docker:
+    compose:
+      enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5433/major_db
     username: ${DB_USERNAME}
