@@ -1,6 +1,5 @@
 .task-details-modal {
   width: 100%;
-  max-width: 520px;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -63,7 +62,6 @@
   border: none;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
-  cursor: pointer;
   transition:
     background-color 0.15s ease,
     transform 0.1s ease,
@@ -80,14 +78,6 @@
 }
 
 @media (max-width: 560px) {
-  .task-details-modal {
-    max-width: 100%;
-  }
-
-  .task-details-actions {
-    justify-content: stretch;
-  }
-
   .task-details-delete-btn {
     width: 100%;
   }
