@@ -108,7 +108,7 @@ Domain model (six JPA entities): `User`, `Task`, `Label`, `ActivityLog`, `Webhoo
 
 ### 1. Configure environment variables
 
-Create `backend/.env`:
+Create `.env`:
 
 ```properties
 DB_USERNAME=major
@@ -243,7 +243,7 @@ cd backend
 - [x] Frontend: weekly summary view
 - [x] `@Async` + `CompletableFuture` for weekly summary generation
 - [x] Test coverage report (JaCoCo) in CI
-- [ ] Full-stack `docker-compose` (backend + frontend + database)
+- [x] Full-stack `docker-compose` (backend + frontend + database)
 - [ ] Future work (outside the thesis scope): caching, OAuth2, two-factor authentication, database migrations (Flyway)
 
 ---

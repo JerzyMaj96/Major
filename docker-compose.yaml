@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: major-db-container
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: major_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - major_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d major_db" ]
+      interval: 5s
+      retries: 10
+      timeout: 5s
+
+  backend:
+    image: jerzyk437/major-backend:v1.0
+    container_name: major-backend-container
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/major_db
+      ALLOWED_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart:
+      unless-stopped
+
+  frontend:
+    image: jerzyk437/major-frontend:v1.0
+    container_name: major-frontend-container
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+volumes:
+  major_postgres_data:

@@ -12,6 +12,6 @@ frontend/.env
 .DS_Store
 
 # env
-backend/.env
+.env
 
 .idea/

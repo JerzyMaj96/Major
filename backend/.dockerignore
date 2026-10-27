@@ -1,5 +1,5 @@
 target
-.env
+../.env
 .git
 .idea
 .mvn/wrapper/maven-wrapper.jar
