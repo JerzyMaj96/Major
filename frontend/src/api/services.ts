@@ -172,7 +172,7 @@ export const labelService = {
   },
   getAllLabels: async (): Promise<Label[]> => {
     const response = await authFetch("GET", `/major/api/labels`);
-    if (!response.ok) throw new Error("Failed ro fetch labels");
+    if (!response.ok) throw new Error("Failed to fetch labels");
     return response.json() as Promise<Label[]>;
   },
   deleteLabel: async (labelId: number): Promise<void> => {
