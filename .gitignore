@@ -10,6 +10,7 @@ frontend/.env
 
 # Ogólne
 .DS_Store
+*.sql
 
 # env
 .env
