@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,9 +45,6 @@ public class TaskServiceUnitTests {
 
     @Mock
     private SimpMessagingTemplate simpMessagingTemplate;
-
-    @Mock
-    private GptService gptService;
 
     @Mock
     private AuthFacade authFacade;
@@ -81,6 +79,16 @@ public class TaskServiceUnitTests {
         lenient().when(activityLogService.createActivityLog(any(Task.class), any(ChangeType.class), any(String.class),
                 any(String.class), any(String.class))).thenReturn(null);
         lenient().when(labelService.getLabelById(1L)).thenReturn(new Label(1L, UUID.randomUUID(), "Label 1", "#FFFFFF"));
+    }
+
+    @Test
+    public void shouldGetMyTasks_IfSuccess() {
+
+        when(authFacade.getCurrentUser()).thenReturn(assignee);
+
+        taskService.getMyTasks();
+
+        verify(taskRepository).findByAssigneeId(assignee.getId());
     }
 
     @Test

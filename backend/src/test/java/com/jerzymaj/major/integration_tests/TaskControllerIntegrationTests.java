@@ -60,12 +60,14 @@ public class TaskControllerIntegrationTests {
 
     private CreateTaskDto createTaskDto;
     private Task testTask;
+    private Task secondTestTask;
+    private User existingUser;
     private User assignee;
     private Label testLabel;
 
     @BeforeEach
     public void setup() {
-        User existingUser = userRepository.findByName("tester")
+        existingUser = userRepository.findByName("tester")
                 .orElseThrow(() -> new IllegalStateException("Expected test user not found"));
 
         assignee = User.builder()
@@ -91,6 +93,15 @@ public class TaskControllerIntegrationTests {
                 .build();
 
         taskRepository.save(testTask);
+
+        secondTestTask = Task.builder()
+                .title("Test Task Two")
+                .description("This is another test task.")
+                .status(TaskStatus.BACKLOG)
+                .createdBy(existingUser)
+                .build();
+
+        taskRepository.save(secondTestTask);
 
         testLabel = Label.builder()
                 .name("Test Label")
@@ -127,7 +138,24 @@ public class TaskControllerIntegrationTests {
 
         mockMvc.perform(get("/major/api/tasks"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void retrieveMyTasks() throws Exception {
+        mockMvc.perform(patch("/major/api/tasks/{taskId}/assignees/{assigneeId}", testTask.getId(), existingUser.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.assignee.id").value(existingUser.getId()));
+
+        mockMvc.perform(patch("/major/api/tasks/{taskId}/assignees/{assigneeId}", secondTestTask.getId(), assignee.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.assignee.id").value(assignee.getId()));
+
+        mockMvc.perform(get("/major/api/tasks/me"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].assignee.id").value(existingUser.getId()));
     }
 
     @Test

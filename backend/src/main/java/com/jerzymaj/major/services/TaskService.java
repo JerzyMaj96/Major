@@ -78,6 +78,12 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public List<Task> getMyTasks() {
+        User user = authFacade.getCurrentUser();
+
+        return taskRepository.findByAssigneeId(user.getId());
+    }
+
     public Task updateTask(Long taskId, UpdateTaskDto updateTaskDto) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found with id: " + taskId));

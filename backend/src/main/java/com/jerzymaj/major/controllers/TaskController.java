@@ -48,6 +48,15 @@ public class TaskController {
         return ResponseEntity.ok(taskDtoList);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<TaskDto>> retrieveMyTasks() {
+        List<TaskDto> taskDtoList = taskService.getMyTasks().stream()
+                .map(TaskMapper::toDto)
+                .toList();
+
+        return ResponseEntity.ok(taskDtoList);
+    }
+
     @PatchMapping("/{taskId}")
     public ResponseEntity<TaskDto> updateTask(@PathVariable("taskId") Long taskId, @RequestBody UpdateTaskDto updateTaskDto) {
         TaskDto taskDto = TaskMapper.toDto(taskService.updateTask(taskId, updateTaskDto));
