@@ -1,10 +1,12 @@
 package com.jerzymaj.major.integration_tests;
 
+import com.jerzymaj.major.configuration.ApiRoutes;
 import com.jerzymaj.major.configuration.BaseIntegrationTest;
 import com.jerzymaj.major.configuration.WithMockCustomUser;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.User;
 import com.jerzymaj.major.models.WebhookEvent;
+import com.jerzymaj.major.models.enums.EventType;
 import com.jerzymaj.major.models.enums.TaskStatus;
 import com.jerzymaj.major.models.enums.WebhookEventStatus;
 import com.jerzymaj.major.repos.TaskRepository;
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -94,7 +97,7 @@ public class WebhookEventControllerIntegrationTests extends BaseIntegrationTest 
 
     @Test
     @WithMockCustomUser
-    public void  handleGitHubWebhook_PushFailed() throws Exception {
+    public void handleGitHubWebhook_PushFailed() throws Exception {
 
         String payload = "Invalid JSON Payload";
 
@@ -278,6 +281,45 @@ public class WebhookEventControllerIntegrationTests extends BaseIntegrationTest 
 
     @Test
     @WithMockCustomUser
+    public void retryProcessWebhookEvent_Success() throws Exception {
+        WebhookEvent failedEvent = webhookEventRepository.save(WebhookEvent.builder()
+                .eventType(EventType.PUSH)
+                .payload("{\"ref\": \"refs/heads/task-%d\"}".formatted(testTask.getId()))
+                .status(WebhookEventStatus.FAILED)
+                .errorMessage("Task not found")
+                .build());
+
+        mockMvc.perform(post(ApiRoutes.BASE_API + "/webhook-events/{webhookEventId}/retry", failedEvent.getId()))
+                .andExpect(status().isNoContent());
+
+        WebhookEvent updated = webhookEventRepository.findById(failedEvent.getId()).orElseThrow();
+        assertThat(updated.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+        assertThat(updated.getErrorMessage()).isNull();
+
+        Task updatedTask = taskRepository.findById(testTask.getId()).orElseThrow();
+        assertThat(updatedTask.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
+    }
+
+    @Test
+    @WithMockCustomUser
+    public void retryProcessWebhookEvent_Fail() throws Exception {
+        WebhookEvent failedEvent = webhookEventRepository.save(WebhookEvent.builder()
+                .eventType(EventType.PUSH)
+                .payload("{\"ref\": \"refs/heads/task-%d\"}".formatted(5L))
+                .status(WebhookEventStatus.FAILED)
+                .errorMessage("Task not found")
+                .build());
+
+        mockMvc.perform(post(ApiRoutes.BASE_API + "/webhook-events/{webhookEventId}/retry", failedEvent.getId()))
+                .andExpect(status().isNoContent());
+
+        WebhookEvent updated = webhookEventRepository.findById(failedEvent.getId()).orElseThrow();
+        assertThat(updated.getStatus()).isEqualTo(WebhookEventStatus.FAILED);
+        assertThat(updated.getErrorMessage()).isEqualTo("Task not found");
+    }
+
+    @Test
+    @WithMockCustomUser
     public void retrieveWebhookEventsByStatus() throws Exception {
         String payload = "Invalid JSON Payload";
 
@@ -293,7 +335,7 @@ public class WebhookEventControllerIntegrationTests extends BaseIntegrationTest 
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/major/api/webhook-events")
-                .param("status", WebhookEventStatus.FAILED.toString()))
+                        .param("status", WebhookEventStatus.FAILED.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].status").value(WebhookEventStatus.FAILED.toString()));

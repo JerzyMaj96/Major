@@ -1,5 +1,6 @@
 package com.jerzymaj.major.unit_tests;
 
+import com.jerzymaj.major.exceptions.TaskNotFoundException;
 import com.jerzymaj.major.models.Task;
 import com.jerzymaj.major.models.WebhookEvent;
 import com.jerzymaj.major.models.enums.EventType;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -146,6 +148,55 @@ public class WebhookEventServiceUnitTests {
         WebhookEvent capturedWebhookEvent = webhookEventCaptor.getValue();
         assertThat(capturedWebhookEvent.getEventType()).isEqualTo(EventType.PULL_REQUEST_CLOSED);
         assertThat(capturedWebhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+    }
+
+    @Test
+    public void shouldRetryProcessEvent_IfSuccess() {
+        WebhookEvent webhookEvent = WebhookEvent.builder()
+                .id(1L)
+                .eventType(EventType.PUSH)
+                .payload("""
+                        {
+                        "ref": "refs/heads/task-123"
+                        }
+                        """)
+                .status(WebhookEventStatus.FAILED)
+                .errorMessage("test error message")
+                .build();
+
+        when(webhookEventRepository.findById(1L)).thenReturn(Optional.of(webhookEvent));
+
+        webhookEventService.retryProcessWebhookEvent(webhookEvent.getId());
+
+        verify(webhookEventRepository, times(2)).save(any(WebhookEvent.class));
+        verify(taskService).updateTaskStatus(eq(123L), eq(TaskStatus.IN_PROGRESS), anyString());
+
+        assertThat(webhookEvent.getStatus()).isEqualTo(WebhookEventStatus.PROCESSED);
+        assertThat(webhookEvent.getErrorMessage()).isNull();
+    }
+
+    @Test
+    public void shouldRetryProcessEvent_IfFailed() {
+        WebhookEvent webhookEvent = WebhookEvent.builder()
+                .id(1L)
+                .eventType(EventType.PUSH)
+                .payload("""
+                        {
+                        "ref": "refs/heads/task-123"
+                        }
+                        """)
+                .status(WebhookEventStatus.FAILED)
+                .errorMessage("test error message")
+                .build();
+
+        when(webhookEventRepository.findById(1L)).thenReturn(Optional.of(webhookEvent));
+        when(taskService.updateTaskStatus(any(Long.class), any(TaskStatus.class), anyString()))
+                .thenThrow(new TaskNotFoundException("Task not found"));
+
+        webhookEventService.retryProcessWebhookEvent(webhookEvent.getId());
+
+        assertThat(webhookEvent.getStatus()).isEqualTo(WebhookEventStatus.FAILED);
+        assertThat(webhookEvent.getErrorMessage()).isEqualTo("test error message");
     }
 
     @Test
