@@ -28,13 +28,13 @@
 
 .weekly-summary-stat .stat-value {
   font-size: 1.8rem;
+  line-height: 2.2rem;
   font-weight: 600;
   color: var(--color-text);
 }
 
 .weekly-summary-stat .stat-value-period {
   font-size: 1.15rem;
-  line-height: 2.2rem;
 }
 
 .weekly-summary-content {
@@ -76,15 +76,15 @@
 }
 
 .weekly-summary-generate-button {
-  color: #fff;
-  background: linear-gradient(135deg, var(--color-primary), #8b5cf6);
+  color: var(--color-on-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   border: none;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 14px var(--color-primary-glow);
 }
 
 .weekly-summary-generate-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 6px 20px var(--color-primary-glow-strong);
 }
 
 .weekly-summary-generate-button:active:not(:disabled) {

@@ -48,7 +48,6 @@
 .create-task-generate-row {
   display: flex;
   justify-content: flex-end;
-  margin-top: -6px;
 }
 
 .generate-description-btn {

@@ -58,21 +58,21 @@
 }
 
 .change-type-badge.task-change {
-  color: #a5b4fc;
-  background: rgba(99, 102, 241, 0.16);
+  color: var(--color-primary-light);
+  background: var(--color-primary-soft);
 }
 
 .change-type-badge.status-change {
-  color: #7dd3fc;
-  background: rgba(56, 189, 248, 0.14);
+  color: var(--color-info);
+  background: var(--color-info-soft);
 }
 
 .change-type-badge.assignee-change {
-  color: #6ee7b7;
-  background: rgba(16, 185, 129, 0.14);
+  color: var(--color-success);
+  background: var(--color-success-soft);
 }
 
 .change-type-badge.label-change {
-  color: #fcd34d;
-  background: rgba(245, 158, 11, 0.14);
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
 }
