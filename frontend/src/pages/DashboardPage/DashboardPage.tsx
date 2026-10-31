@@ -90,7 +90,7 @@ function DashboardPage() {
   };
 
   return (
-    <div className="dashboard-page">
+    <div className="page">
       <h1>Dashboard</h1>
       <p>Welcome to the dashboard!</p>
 

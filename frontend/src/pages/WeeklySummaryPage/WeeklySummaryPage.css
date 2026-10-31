@@ -1,20 +1,3 @@
-.weekly-summary-page {
-  width: 100%;
-  max-width: 1080px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.weekly-summary-page > h1 {
-  font-size: 1.9rem;
-}
-
-.weekly-summary-page > p {
-  color: var(--color-text-muted);
-  margin-bottom: 24px;
-}
-
 .weekly-summary-stats {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -33,10 +16,6 @@
   flex-direction: column;
   gap: 6px;
   padding: 18px 20px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
 }
 
 .weekly-summary-stat .stat-label {
@@ -58,52 +37,12 @@
   line-height: 2.2rem;
 }
 
-.weekly-summary-card {
-  width: 100%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-
-.weekly-summary-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 14px 20px;
-  background: var(--color-surface-alt);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.weekly-summary-card-header h2 {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.weekly-summary-meta {
-  font-size: 0.8rem;
-  color: var(--color-text-faint);
-}
-
 .weekly-summary-content {
   padding: 20px;
   font-size: 0.95rem;
   line-height: 1.65;
   color: var(--color-text);
   white-space: pre-wrap;
-}
-
-.weekly-summary-empty {
-  padding: 48px 16px;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
 }
 
 .weekly-summary-history {
@@ -173,19 +112,4 @@
 .weekly-summary-history-button:focus-visible {
   outline: 2px solid var(--color-primary-hover);
   outline-offset: 2px;
-}
-
-.button-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: button-spin 0.7s linear infinite;
-}
-
-@keyframes button-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }

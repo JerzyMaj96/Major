@@ -1,5 +1,4 @@
 import React from "react";
-import "./RegisterPage.css";
 import type { UserRegister } from "../../types/types";
 import { useNavigate } from "react-router-dom";
 import { userService } from "../../api/services";
@@ -36,7 +35,7 @@ function RegisterPage() {
   };
 
   return (
-    <div className="register-page">
+    <div className="auth-page">
       <h1>Registration</h1>
       <form onSubmit={handleUser}>
         <input

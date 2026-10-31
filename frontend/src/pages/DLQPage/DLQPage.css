@@ -1,56 +1,7 @@
-.dlq-page {
-  width: 100%;
-  max-width: 1080px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dlq-page > h1 {
-  font-size: 1.9rem;
-}
-
-.dlq-page > p {
-  color: var(--color-text-muted);
-  margin-bottom: 24px;
-}
-
 .dlq-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.dlq-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-soft);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-
-.dlq-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 14px 20px;
-  background: var(--color-surface-alt);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.dlq-card-header h2 {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.dlq-meta {
-  font-size: 0.8rem;
-  color: var(--color-text-faint);
 }
 
 .dlq-error {
@@ -97,19 +48,4 @@
 .dlq-retry-button:disabled {
   opacity: 0.7;
   cursor: wait;
-}
-
-.dlq-spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(129, 140, 248, 0.35);
-  border-top-color: var(--color-primary-hover);
-  border-radius: 50%;
-  animation: dlq-spin 0.7s linear infinite;
-}
-
-@keyframes dlq-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }

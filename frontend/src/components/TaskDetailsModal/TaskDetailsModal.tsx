@@ -31,11 +31,11 @@ function TaskDetailsModal({ task, onTaskDeleted }: TaskDetailsModalProps) {
   };
 
   return (
-    <div className="task-details-modal">
+    <div className="modal-body">
       <h2>{task.title}</h2>
-      <div className="task-details-form">
-        <div className="task-details-field">
-          <label className="task-details-label" htmlFor="description">
+      <div className="modal-form">
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="description">
             Description
           </label>
           <p className="task-details-description">
@@ -43,8 +43,8 @@ function TaskDetailsModal({ task, onTaskDeleted }: TaskDetailsModalProps) {
           </p>
         </div>
 
-        <div className="task-details-field">
-          <label className="task-details-label" htmlFor="assignee">
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="assignee">
             Assignee
           </label>
           <p className="task-details-value">
@@ -52,24 +52,24 @@ function TaskDetailsModal({ task, onTaskDeleted }: TaskDetailsModalProps) {
           </p>
         </div>
 
-        <div className="task-details-field">
-          <label className="task-details-label" htmlFor="createdBy">
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="createdBy">
             Created By
           </label>
           <p className="task-details-value">{task.createdBy.name}</p>
         </div>
 
-        <div className="task-details-field">
-          <label className="task-details-label" htmlFor="status">
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="status">
             Status
           </label>
           <p className="task-details-value">{STATUS_LABELS[task.status]}</p>
         </div>
 
-        <div className="task-details-actions">
+        <div className="modal-actions">
           <button
             type="button"
-            className="task-details-delete-btn"
+            className="btn btn-danger"
             onClick={handleDeleteTask}
           >
             Delete Task

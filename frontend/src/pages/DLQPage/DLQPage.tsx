@@ -35,7 +35,7 @@ function DLQPage() {
   };
 
   return (
-    <div className="dlq-page">
+    <div className="page">
       <h1>Failed Webhooks</h1>
       <p>
         Webhook events that failed to process. Retry them after fixing the
@@ -49,10 +49,10 @@ function DLQPage() {
       ) : (
         <div className="dlq-list">
           {webhookEvents.map((event) => (
-            <div key={event.id} className="dlq-card">
-              <div className="dlq-card-header">
+            <div key={event.id} className="card">
+              <div className="card-header">
                 <h2>{event.eventType}</h2>
-                <span className="dlq-meta">
+                <span className="card-meta">
                   #{event.id} · Received {formatDateTime(event.receivedAt)}
                   {event.taskId !== null && ` · Task #${event.taskId}`}
                 </span>
@@ -67,7 +67,7 @@ function DLQPage() {
                   disabled={retryingId === event.id}
                 >
                   {retryingId === event.id ? (
-                    <span className="dlq-spinner" aria-hidden="true" />
+                    <span className="spinner" aria-hidden="true" />
                   ) : (
                     <ReplayIcon fontSize="small" />
                   )}

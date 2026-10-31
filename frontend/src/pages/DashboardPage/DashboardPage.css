@@ -1,20 +1,3 @@
-.dashboard-page {
-  width: 100%;
-  max-width: 1080px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dashboard-page > h1 {
-  font-size: 1.9rem;
-}
-
-.dashboard-page > p {
-  color: var(--color-text-muted);
-  margin-bottom: 24px;
-}
-
 .board {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

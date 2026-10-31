@@ -124,3 +124,276 @@ button {
     padding: 28px 16px;
   }
 }
+
+/* ---------------------------------------------------------------- */
+/* Page                                                               */
+/* ---------------------------------------------------------------- */
+.page {
+  width: 100%;
+  max-width: 1080px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.page > h1 {
+  font-size: 1.9rem;
+}
+
+.page > p {
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+}
+
+.empty-state {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* ---------------------------------------------------------------- */
+/* Card                                                               */
+/* ---------------------------------------------------------------- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 20px;
+  background: var(--color-surface-alt);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.card-header h2 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.card-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-faint);
+}
+
+/* ---------------------------------------------------------------- */
+/* Spinner (takes the color of its parent's text)                    */
+/* ---------------------------------------------------------------- */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Modal body (content rendered inside .modal-content)               */
+/* ---------------------------------------------------------------- */
+.modal-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-body > h2 {
+  font-size: 1.3rem;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+/* ---------------------------------------------------------------- */
+/* Buttons                                                            */
+/* ---------------------------------------------------------------- */
+.btn {
+  padding: 10px 20px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.btn-danger {
+  background: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background: var(--color-danger-hover);
+}
+
+@media (max-width: 560px) {
+  .modal-actions .btn {
+    width: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------- */
+/* Auth pages (login, register)                                       */
+/* ---------------------------------------------------------------- */
+.auth-page {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 22px;
+  padding: 40px 36px;
+  margin-top: 24px;
+  background: linear-gradient(180deg, var(--color-surface), var(--color-bg-alt));
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  height: fit-content;
+}
+
+.auth-page > h1 {
+  text-align: center;
+  font-size: 1.6rem;
+}
+
+.auth-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-page form input {
+  width: 100%;
+  padding: 13px 15px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.auth-page form input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.auth-page form input:hover {
+  border-color: var(--color-text-faint);
+}
+
+.auth-page form input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  background: var(--color-bg-alt);
+}
+
+.auth-page form button {
+  padding: 12px 16px;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition:
+    transform 0.08s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.auth-page form button[type="submit"] {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), #4f46e5);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
+}
+
+.auth-page form button[type="submit"]:hover {
+  background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);
+}
+
+.auth-page form button[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+.auth-page form button[type="button"] {
+  color: var(--color-text-muted);
+  background: transparent;
+  border-color: var(--color-border);
+}
+
+.auth-page form button[type="button"]:hover {
+  color: var(--color-text);
+  border-color: var(--color-text-faint);
+  background: var(--color-surface-alt);
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    padding: 30px 22px;
+  }
+}

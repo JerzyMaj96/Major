@@ -64,34 +64,34 @@ function WeeklySummaryPage() {
   };
 
   return (
-    <div className="weekly-summary-page">
+    <div className="page">
       <h1>Weekly Summary</h1>
       <p>An overview of your progress over the last week.</p>
 
       {weeklySummary ? (
         <>
           <div className="weekly-summary-stats">
-            <div className="weekly-summary-stat">
+            <div className="card weekly-summary-stat">
               <span className="stat-label">Period</span>
               <span className="stat-value stat-value-period">
                 {formatDate(weeklySummary.periodStart)} –{" "}
                 {formatDate(weeklySummary.periodEnd)}
               </span>
             </div>
-            <div className="weekly-summary-stat">
+            <div className="card weekly-summary-stat">
               <span className="stat-label">Tasks Created</span>
               <span className="stat-value">{weeklySummary.tasksCreated}</span>
             </div>
-            <div className="weekly-summary-stat">
+            <div className="card weekly-summary-stat">
               <span className="stat-label">Tasks Completed</span>
               <span className="stat-value">{weeklySummary.tasksCompleted}</span>
             </div>
           </div>
 
-          <div className="weekly-summary-card">
-            <div className="weekly-summary-card-header">
+          <div className="card">
+            <div className="card-header">
               <h2>Summary</h2>
-              <span className="weekly-summary-meta">
+              <span className="card-meta">
                 #{weeklySummary.id} · Generated{" "}
                 {formatDateTime(weeklySummary.generatedAt)}
               </span>
@@ -100,8 +100,8 @@ function WeeklySummaryPage() {
           </div>
         </>
       ) : (
-        <div className="weekly-summary-card">
-          <p className="weekly-summary-empty">
+        <div className="card">
+          <p className="empty-state">
             {loading ? "Loading summary…" : "No weekly summaries yet."}
           </p>
         </div>
@@ -115,7 +115,7 @@ function WeeklySummaryPage() {
             disabled={generating}
           >
             {generating ? (
-              <span className="button-spinner" aria-hidden="true" />
+              <span className="spinner" aria-hidden="true" />
             ) : (
               <AutoAwesomeIcon fontSize="small" />
             )}
@@ -131,17 +131,17 @@ function WeeklySummaryPage() {
         </div>
 
         {allSummaries?.length === 0 && (
-          <p className="weekly-summary-empty">No weekly summaries available.</p>
+          <p className="empty-state">No weekly summaries available.</p>
         )}
 
         {allSummaries?.map((summary) => (
-          <div key={summary.id} className="weekly-summary-card">
-            <div className="weekly-summary-card-header">
+          <div key={summary.id} className="card">
+            <div className="card-header">
               <h2>
                 {formatDate(summary.periodStart)} –{" "}
                 {formatDate(summary.periodEnd)}
               </h2>
-              <span className="weekly-summary-meta">
+              <span className="card-meta">
                 #{summary.id} · Generated {formatDateTime(summary.generatedAt)}
               </span>
             </div>

@@ -33,11 +33,11 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
   };
 
   return (
-    <div className="create-task-modal">
+    <div className="modal-body">
       <h2>Create Task</h2>
-      <form className="create-task-form" onSubmit={handleCreateTask}>
-        <div className="create-task-field">
-          <label className="create-task-label" htmlFor="title">
+      <form className="modal-form" onSubmit={handleCreateTask}>
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="title">
             Title
           </label>
           <input
@@ -52,8 +52,8 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
           />
         </div>
 
-        <div className="create-task-field">
-          <label className="create-task-label" htmlFor="description">
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="description">
             Description
           </label>
           <textarea
@@ -66,8 +66,8 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
           ></textarea>
         </div>
 
-        <div className="create-task-field">
-          <label className="create-task-label" htmlFor="assigneeId">
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="assigneeId">
             Assignee ID
           </label>
           <input
@@ -102,8 +102,8 @@ function CreateTaskModal({ onTaskCreated }: CreateTaskModalProps) {
           </button>
         </div>
 
-        <div className="create-task-actions">
-          <button type="submit" className="create-task-submit-btn">
+        <div className="modal-actions">
+          <button type="submit" className="btn btn-primary">
             Create Task
           </button>
         </div>

@@ -38,11 +38,11 @@ function ActivityLogsPage() {
   }, []);
 
   return (
-    <div className="activity-logs-page">
+    <div className="page">
       <h1>Activity Logs</h1>
       <p>A history of changes made across your tasks.</p>
 
-      <div className="activity-logs-table-wrapper">
+      <div className="card activity-logs-table-wrapper">
         <table className="activity-logs-table">
           <thead>
             <tr>
@@ -77,7 +77,7 @@ function ActivityLogsPage() {
         </table>
 
         {activityLogs?.length === 0 && (
-          <p className="activity-logs-empty">No activity logs yet.</p>
+          <p className="empty-state">No activity logs yet.</p>
         )}
       </div>
     </div>
